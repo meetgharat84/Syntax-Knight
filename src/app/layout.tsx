@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import "./globals.css";
 import { GameProvider } from '@/GameContext';
 import { UserProvider } from '@/context/UserContext';
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: 'SyntaxKnight - Neo-Brutalist Code Combat RPG',
@@ -37,6 +38,7 @@ export default function RootLayout({
             <GameProvider>{children}</GameProvider>
           </UserProvider>
         </div>
+        <Analytics />
       </body>
     </html>
   );
