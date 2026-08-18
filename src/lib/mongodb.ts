@@ -37,9 +37,11 @@ if (!globalThis.mongooseCache) {
  * @returns {Promise<Mongoose>} Active Mongoose connection instance
  */
 export async function connectToDatabase(): Promise<Mongoose> {
-  const MONGODB_URI =
-    process.env.MONGODB_URI ||
-    'mongodb+srv://syntaxknight:syntaxknight123@cluster0.mongodb.net/syntaxknight?retryWrites=true&w=majority';
+  const MONGODB_URI = process.env.MONGODB_URI;
+
+  if (!MONGODB_URI) {
+    throw new Error('CRITICAL: MONGODB_URI environment variable is missing.');
+  }
 
   // If connection is already established, return it immediately
   if (cached.conn) {
