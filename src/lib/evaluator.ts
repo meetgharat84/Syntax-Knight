@@ -199,21 +199,10 @@ export function parseJsTsAst(code: string): { isValid: boolean; errorMsg?: strin
       plugins: [
         'jsx',
         'typescript',
-        'asyncGenerators',
-        'bigInt',
-        'classProperties',
-        'classPrivateProperties',
-        'classPrivateMethods',
         'decorators-legacy',
         'doExpressions',
-        'dynamicImport',
         'exportDefaultFrom',
-        'nullishCoalescingOperator',
-        'numericSeparator',
-        'objectRestSpread',
-        'optionalCatchBinding',
-        'optionalChaining',
-      ],
+      ] as any,
       errorRecovery: false,
     });
     return { isValid: true, ast };
