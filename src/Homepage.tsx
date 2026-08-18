@@ -43,7 +43,7 @@ import { audioEngine } from './audioEngine';
 import { ThreeDTilt } from './components/ThreeDTilt';
 
 // Get API Key securely (Next.js syntax)
-const API_KEY = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.NEXT_PUBLIC_BYTEZ_API_KEY || '';
+const API_KEY = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_BYTEZ_API_KEY || process.env.BYTEZ_API_KEY || '';
 
 
 const SKILL_TRACKS = [

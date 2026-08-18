@@ -30,7 +30,7 @@ export default function AiMentorDrawer({ isOpen, onClose, currentCode, activeFil
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const OPENROUTER_KEY = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.NEXT_PUBLIC_BYTEZ_API_KEY || '';
+  const OPENROUTER_KEY = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_BYTEZ_API_KEY || process.env.BYTEZ_API_KEY || '';
   const isKeyAuthorized = !!OPENROUTER_KEY && OPENROUTER_KEY !== 'your_real_openrouter_key_here' && !OPENROUTER_KEY.startsWith('your_real_');
 
   // Scroll to bottom on new messages

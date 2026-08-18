@@ -19,7 +19,7 @@ import { generateQuestWithGemini } from './services/aiEngine';
 import type { GeneratedQuest } from './services/aiEngine';
 
 // Get Gemini environment variable
-const GEMINI_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_BYTEZ_API_KEY || '';
+const GEMINI_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_BYTEZ_API_KEY || process.env.BYTEZ_API_KEY || '';
 
 export default function AiLevelGenerator() {
   const navigate = useNavigate();

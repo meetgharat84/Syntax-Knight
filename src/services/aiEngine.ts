@@ -28,7 +28,7 @@ export const EMERGENCY_FALLBACK_QUEST: GeneratedQuest = {
  * Intercepts any missing keys or parse issues with a robust fallback guard.
  */
 export async function generateQuestWithGemini(userPrompt: string): Promise<GeneratedQuest> {
-  const API_KEY = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.NEXT_PUBLIC_BYTEZ_API_KEY || '';
+  const API_KEY = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_BYTEZ_API_KEY || process.env.BYTEZ_API_KEY || '';
 
   // Strict guard clause: Check if key is absent or fallback placeholder
   if (!API_KEY || API_KEY === 'your_real_api_key_here' || API_KEY.startsWith('your_real_')) {
