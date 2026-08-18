@@ -1,0 +1,1628 @@
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  overflow-y: auto;
+}
+
+/* ═══════════════════════════════════════════════
+   SYNTAXKNIGHT — NEO-BRUTALIST ACID DESIGN SYSTEM
+   ═══════════════════════════════════════════════ */
+
+* {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  box-sizing: border-box;
+}
+
+/* Typography utility classes */
+.font-display {
+  font-family: 'Dela Gothic One', cursive, system-ui;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.font-body {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+
+.font-sans-inter {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.font-code {
+  font-family: 'Fira Code', monospace;
+}
+
+/* ═══════════════════════════════════════════════
+   ACID THEME TOKENS
+   ═══════════════════════════════════════════════ */
+@theme {
+  --color-acid-bg: #F8F4E8;
+  --color-acid-ink: #09090B;
+  --color-acid-accent: #D2E823;
+  --color-acid-cream: #FFFEF9;
+  --color-acid-muted: #E8E4D8;
+  --color-acid-crimson: #DC2626;
+}
+
+/* ═══════════════════════════════════════════════
+   SOFT ELEGANT SHADOW & SUBTLE BORDER UTILITIES
+   ═══════════════════════════════════════════════ */
+.brutal-shadow {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+}
+
+.brutal-shadow-sm {
+  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
+}
+
+.brutal-shadow-accent {
+  box-shadow: 0 10px 25px -5px rgba(210, 232, 35, 0.3);
+}
+
+.dark .brutal-shadow,
+.dark .brutal-shadow-sm,
+.dark .brutal-shadow-accent {
+  box-shadow: none !important;
+  border-color: rgba(30, 41, 59, 0.8) !important;
+}
+
+.brutal-border {
+  border: 1.5px solid rgba(15, 23, 42, 0.15);
+}
+
+.dark .brutal-border {
+  border: 1px solid rgba(30, 41, 59, 0.8);
+}
+
+.brutal-border-thick {
+  border: 2px solid rgba(15, 23, 42, 0.2);
+}
+
+.dark .brutal-border-thick {
+  border: 1px solid rgba(30, 41, 59, 0.8);
+}
+
+/* ═══════════════════════════════════════════════
+   TACTILE BUTTON PRESS & UNIVERSAL TRANSITIONS
+   Every action button behaves like a physical key
+   ═══════════════════════════════════════════════ */
+.btn-press {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-press:hover {
+  transform: translateY(-2px);
+}
+
+.btn-press:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+.btn-press-sm {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-press-sm:hover {
+  transform: translateY(-1px);
+}
+
+.btn-press-sm:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+/* ═══════════════════════════════════════════════
+   KEYFRAME ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+/* Fade-up entrance */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+}
+
+.animation-delay-600 {
+  animation-delay: 0.6s;
+}
+
+.animation-delay-800 {
+  animation-delay: 0.8s;
+}
+
+/* Glitch text jitter — structural ±2px displacement */
+@keyframes glitchJitter {
+  0% {
+    transform: translate(0, 0);
+    text-shadow: 2px 0 0 #D2E823, -2px 0 0 #DC2626;
+  }
+
+  20% {
+    transform: translate(-2px, 1px);
+    text-shadow: -2px 0 0 #D2E823, 2px 0 0 #DC2626;
+  }
+
+  40% {
+    transform: translate(2px, -1px);
+    text-shadow: 2px 0 0 #DC2626, -2px 0 0 #D2E823;
+  }
+
+  60% {
+    transform: translate(-1px, 2px);
+    text-shadow: -2px 0 0 #DC2626, 2px 0 0 #D2E823;
+  }
+
+  80% {
+    transform: translate(1px, -2px);
+    text-shadow: 2px 0 0 #D2E823, -2px 0 0 #DC2626;
+  }
+
+  100% {
+    transform: translate(0, 0);
+    text-shadow: none;
+  }
+}
+
+.glitch-hover {
+  cursor: pointer;
+}
+
+.glitch-hover:hover {
+  animation: glitchJitter 0.3s linear;
+}
+
+/* Brutalist stamp-in for modals */
+@keyframes stampIn {
+  from {
+    opacity: 0;
+    transform: scale(1.1) rotate(-1deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.animate-stamp-in {
+  animation: stampIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Shake animation for wrong-answer feedback */
+@keyframes shakeError {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  50%,
+  90% {
+    transform: translateX(-6px);
+  }
+
+  30%,
+  70% {
+    transform: translateX(6px);
+  }
+}
+
+.animate-shake {
+  animation: shakeError 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* Success pop animation */
+@keyframes successPop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-success-pop {
+  animation: successPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Pulse for status indicators */
+@keyframes acidPulse {
+
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-acid-pulse {
+  animation: acidPulse 2s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════
+   SVG NOISE TEXTURE OVERLAY (3% opacity)
+   Applied via pseudo-element on layout wrapper
+   ═══════════════════════════════════════════════ */
+.noise-overlay {
+  position: relative;
+}
+
+.noise-overlay::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* ═══════════════════════════════════════════════
+   RADIAL DOT PATTERN TEXTURE
+   Used on smaller bento cards
+   ═══════════════════════════════════════════════ */
+.dot-pattern {
+  background-image: radial-gradient(circle, #09090B 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* ═══════════════════════════════════════════════
+   CUSTOM SCROLLBAR — GLASS-MOBIUS
+   ═══════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(9, 9, 11, 0.25);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(210, 232, 35, 0.6);
+}
+
+/* ═══════════════════════════════════════════════
+   SELECTION COLORS
+   ═══════════════════════════════════════════════ */
+::selection {
+  background: #D2E823;
+  color: #09090B;
+}
+
+::-moz-selection {
+  background: #D2E823;
+  color: #09090B;
+}
+
+/* ═══════════════════════════════════════════════
+   CUSTOM CURSOR COMPONENT STYLES
+   ═══════════════════════════════════════════════ */
+.custom-cursor {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: white;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  position: fixed;
+  z-index: 99999;
+  transition: transform 0.15s ease-out;
+}
+
+/* Hide custom cursor on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .custom-cursor {
+    display: none !important;
+  }
+}
+
+
+
+
+/* ═══════════════════════════════════════════════
+   FOLDER TAB CUTOUT STYLE
+   For codex tabs in arena view
+   ═══════════════════════════════════════════════ */
+.folder-tab {
+  border: 2px solid #09090B;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  position: relative;
+  top: 2px;
+  z-index: 1;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.folder-tab-active {
+  background-color: #D2E823;
+  color: #09090B;
+  font-weight: 700;
+  z-index: 2;
+}
+
+.folder-tab-inactive {
+  background-color: #E8E4D8;
+  color: #09090B;
+}
+
+.folder-tab-inactive:hover {
+  background-color: #D2E823;
+}
+
+/* ═══════════════════════════════════════════════
+   CODE AREA CRIMSON FLASH ON ERROR
+   ═══════════════════════════════════════════════ */
+.code-error-flash {
+  border-color: #DC2626 !important;
+  box-shadow: inset 0 0 0 2px #DC2626;
+}
+
+.code-success-flash {
+  border-color: #D2E823 !important;
+  box-shadow: inset 0 0 0 2px #D2E823;
+}
+
+/* ═══════════════════════════════════════════════
+   STICKER BADGE (tilted accent element)
+   ═══════════════════════════════════════════════ */
+.sticker-badge {
+  display: inline-block;
+  background: #D2E823;
+  color: #09090B;
+  border: 2px solid #09090B;
+  padding: 6px 16px;
+  font-family: 'Dela Gothic One', cursive;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transform: rotate(-2deg);
+  box-shadow: 2px 2px 0px 0px #09090B;
+}
+
+/* ═══════════════════════════════════════════════
+   BRUTAL VIOLENT SHAKE ON COMPILER ERROR
+   ═══════════════════════════════════════════════ */
+@keyframes brutal-shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-6px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(6px);
+  }
+}
+
+.brutal-shake {
+  animation: brutal-shake 0.4s ease-in-out;
+}
+
+/* Glitch Jitter on Hover */
+@keyframes text-glitch {
+  0% {
+    transform: translate(0);
+  }
+
+  20% {
+    transform: translate(-2px, 2px);
+  }
+
+  40% {
+    transform: translate(2px, -2px);
+  }
+
+  60% {
+    transform: translate(-2px, -2px);
+  }
+
+  80% {
+    transform: translate(2px, 2px);
+  }
+
+  100% {
+    transform: translate(0);
+  }
+}
+
+.glitch-text:hover {
+  animation: text-glitch 0.3s linear infinite;
+}
+
+/* Infinite Linear Marquee */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: 200%;
+  animation: marquee 20s linear infinite;
+}
+
+/* Dot Grid Textures */
+.dot-grid-pattern {
+  background-image: radial-gradient(#09090B 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
+/* Hard-shadow button active clicks */
+.btn-press:active {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 0px 0px 0px 0px #09090B !important;
+}
+
+/* Vector Grid Backdrop */
+.vector-grid-backdrop {
+  background-image: linear-gradient(to right, rgba(9, 9, 11, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(9, 9, 11, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════
+   GLASSMORPHISM DESIGN ENGINE
+   ═══════════════════════════════════════════════ */
+
+/* Breathing Animations for Ambient Glow Spheres */
+@keyframes breathe-1 {
+
+  0%,
+  100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.35;
+  }
+
+  50% {
+    transform: scale(1.15) translate(40px, -20px);
+    opacity: 0.55;
+  }
+}
+
+@keyframes breathe-2 {
+
+  0%,
+  100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.3;
+  }
+
+  50% {
+    transform: scale(1.1) translate(-30px, 35px);
+    opacity: 0.5;
+  }
+}
+
+@keyframes breathe-3 {
+
+  0%,
+  100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.25;
+  }
+
+  50% {
+    transform: scale(1.18) translate(30px, 20px);
+    opacity: 0.45;
+  }
+}
+
+.animate-breathe-1 {
+  animation: breathe-1 12s ease-in-out infinite;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+}
+
+.animate-breathe-2 {
+  animation: breathe-2 15s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+}
+
+.animate-breathe-3 {
+  animation: breathe-3 18s ease-in-out infinite;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+}
+
+/* LIQUID GLASSMORPHISM ENGINE */
+.glass-liquid {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(28px) saturate(210%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(210%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), inset 0 1px 2px rgba(255, 255, 255, 0.9) !important;
+}
+
+.dark .glass-liquid {
+  background: rgba(15, 23, 42, 0.92) !important;
+  backdrop-filter: blur(32px) saturate(220%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(220%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), inset 0 1px 1.5px rgba(255, 255, 255, 0.25) !important;
+}
+
+.glass-liquid-card {
+  border-radius: 1.5rem !important; /* rounded-3xl */
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.glass-liquid-card:hover {
+  transform: translateY(-4px) scale(1.005) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.7), 0 0 25px rgba(210, 232, 35, 0.2) !important;
+}
+
+/* Glass Token Classes */
+.glass-outer {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(28px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 12px 36px 0 rgba(9, 9, 11, 0.08), inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+.dark .glass-outer {
+  background: rgba(15, 23, 42, 0.90) !important;
+  backdrop-filter: blur(32px) saturate(220%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(220%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), inset 0 1px 1.5px rgba(255, 255, 255, 0.25) !important;
+}
+
+.glass-inner {
+  background: rgba(248, 250, 252, 0.92) !important;
+  backdrop-filter: blur(20px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  border-bottom: 1px solid rgba(9, 9, 11, 0.05) !important;
+  border-right: 1px solid rgba(9, 9, 11, 0.05) !important;
+  box-shadow: inset 0 2px 4px 0 rgba(9, 9, 11, 0.04) !important;
+}
+
+.dark .glass-inner {
+  background: rgba(30, 41, 59, 0.92) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+.glass-dark-code {
+  background: rgba(9, 9, 11, 0.85) !important;
+  backdrop-filter: blur(32px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(160%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #F8F4E8 !important;
+}
+
+/* Compound Glass Shadow Integrations */
+.shadow-brutal-glass-sm {
+  box-shadow: 0 4px 12px 0 rgba(9, 9, 11, 0.05), 0 1px 3px 0 rgba(9, 9, 11, 0.03) !important;
+}
+
+.shadow-brutal-glass {
+  box-shadow: 0 8px 24px 0 rgba(9, 9, 11, 0.08), 0 2px 8px 0 rgba(9, 9, 11, 0.04) !important;
+}
+
+.shadow-brutal-glass-lg {
+  box-shadow: 0 16px 32px 0 rgba(9, 9, 11, 0.1), 0 4px 12px 0 rgba(9, 9, 11, 0.05) !important;
+}
+
+.shadow-brutal-glass-xl {
+  box-shadow: 0 24px 48px 0 rgba(9, 9, 11, 0.12), 0 6px 16px 0 rgba(9, 9, 11, 0.06) !important;
+}
+
+.shadow-brutal-glass-xxl {
+  box-shadow: 0 32px 64px 0 rgba(9, 9, 11, 0.15), 0 8px 24px 0 rgba(9, 9, 11, 0.08) !important;
+}
+
+/* ═══════════════════════════════════════════════
+   LIGHT MODE TEXT INVISIBILITY RECOVERY (GLOBAL OVERRIDES)
+   ═══════════════════════════════════════════════ */
+.text-\[\#F8F4E8\] {
+  color: #09090B !important;
+}
+
+.text-white {
+  color: #09090B !important;
+}
+
+.text-slate-100 {
+  color: #09090B !important;
+}
+
+.text-slate-200 {
+  color: #09090B !important;
+}
+
+.text-slate-300 {
+  color: #09090B !important;
+}
+
+.text-\[\#F8F4E8\]\/80 {
+  color: rgba(9, 9, 11, 0.8) !important;
+}
+
+.text-\[\#F8F4E8\]\/60 {
+  color: rgba(9, 9, 11, 0.6) !important;
+}
+
+.text-\[\#F8F4E8\]\/50 {
+  color: rgba(9, 9, 11, 0.5) !important;
+}
+
+.text-\[\#F8F4E8\]\/40 {
+  color: rgba(9, 9, 11, 0.4) !important;
+}
+
+.text-white\/80 {
+  color: rgba(9, 9, 11, 0.8) !important;
+}
+
+.text-white\/60 {
+  color: rgba(9, 9, 11, 0.6) !important;
+}
+
+.text-white\/50 {
+  color: rgba(9, 9, 11, 0.5) !important;
+}
+
+.text-white\/40 {
+  color: rgba(9, 9, 11, 0.4) !important;
+}
+
+/* Restore text visibility for dark containers */
+.glass-dark-code .text-\[\#F8F4E8\] {
+  color: #F8F4E8 !important;
+}
+
+.glass-dark-code .text-white {
+  color: #ffffff !important;
+}
+
+.glass-dark-code .text-slate-100 {
+  color: #f1f5f9 !important;
+}
+
+.glass-dark-code .text-slate-200 {
+  color: #e2e8f0 !important;
+}
+
+.glass-dark-code .text-slate-300 {
+  color: #cbd5e1 !important;
+}
+
+.glass-dark-code .text-\[\#F8F4E8\]\/80 {
+  color: rgba(248, 244, 232, 0.8) !important;
+}
+
+.glass-dark-code .text-\[\#F8F4E8\]\/60 {
+  color: rgba(248, 244, 232, 0.6) !important;
+}
+
+.glass-dark-code .text-\[\#F8F4E8\]\/50 {
+  color: rgba(248, 244, 232, 0.5) !important;
+}
+
+.glass-dark-code .text-\[\#F8F4E8\]\/40 {
+  color: rgba(248, 244, 232, 0.4) !important;
+}
+
+.glass-dark-code .text-white\/80 {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.glass-dark-code .text-white\/60 {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.glass-dark-code .text-white\/50 {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.glass-dark-code .text-white\/40 {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* ═══════════════════════════════════════════════
+   3D AUTO-FLOATING GLASS BACKDROP OBJECTS
+   ═══════════════════════════════════════════════ */
+/* 3D Glass Sphere */
+.glass-sphere-3d {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.35) 60%, rgba(9, 9, 11, 0.1) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.8) !important;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow:
+    inset 0 10px 20px rgba(255, 255, 255, 0.5),
+    inset 0 -5px 15px rgba(9, 9, 11, 0.05),
+    0 15px 35px rgba(9, 9, 11, 0.08) !important;
+  will-change: transform;
+}
+
+/* 3D Glass Donut Ring */
+.glass-donut-3d {
+  border-radius: 50% !important;
+  border: 20px solid rgba(255, 255, 255, 0.5) !important;
+  border-top-color: rgba(255, 255, 255, 0.8) !important;
+  border-left-color: rgba(255, 255, 255, 0.8) !important;
+  border-bottom-color: rgba(9, 9, 11, 0.15) !important;
+  border-right-color: rgba(9, 9, 11, 0.15) !important;
+  box-shadow:
+    0 15px 35px rgba(9, 9, 11, 0.06),
+    inset 0 2px 5px rgba(255, 255, 255, 0.4) !important;
+  will-change: transform;
+}
+
+/* 3D Glass Pill Capsule */
+.glass-pill-3d {
+  border-radius: 9999px !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.3) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.7) !important;
+  border-left: 1.5px solid rgba(255, 255, 255, 0.7) !important;
+  border-bottom: 1px solid rgba(9, 9, 11, 0.08) !important;
+  border-right: 1px solid rgba(9, 9, 11, 0.08) !important;
+  box-shadow:
+    0 10px 30px rgba(9, 9, 11, 0.05),
+    inset 0 5px 10px rgba(255, 255, 255, 0.3) !important;
+  will-change: transform;
+}
+
+/* Sphere 1 Floating Loop */
+.animate-float-sphere-1 {
+  animation: float-sphere-1 25s ease-in-out infinite;
+}
+
+/* Donut Floating Loop */
+.animate-float-donut {
+  animation: float-donut 35s ease-in-out infinite;
+}
+
+/* Pill Floating Loop */
+.animate-float-pill {
+  animation: float-pill 30s ease-in-out infinite;
+}
+
+/* Sphere 2 Floating Loop */
+.animate-float-sphere-2 {
+  animation: float-sphere-2 28s ease-in-out infinite;
+}
+
+@keyframes float-sphere-1 {
+  0% {
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-40px) translateX(20px) rotate(180deg);
+  }
+
+  100% {
+    transform: translateY(0px) translateX(0px) rotate(360deg);
+  }
+}
+
+@keyframes float-donut {
+  0% {
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(30px) translateX(-25px) rotate(-180deg);
+  }
+
+  100% {
+    transform: translateY(0px) translateX(0px) rotate(-360deg);
+  }
+}
+
+@keyframes float-pill {
+  0% {
+    transform: translateY(0px) translateX(0px) rotate(15deg);
+  }
+
+  50% {
+    transform: translateY(-50px) translateX(-20px) rotate(45deg);
+  }
+
+  100% {
+    transform: translateY(0px) translateX(0px) rotate(15deg);
+  }
+}
+
+@keyframes float-sphere-2 {
+  0% {
+    transform: translateY(0px) translateX(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(25px) translateX(35px) rotate(120deg);
+  }
+
+  100% {
+    transform: translateY(0px) translateX(0px) rotate(240deg);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   3D ROTATING GLASS CUBE SHOWCASE FOR LOGIN
+   ═══════════════════════════════════════════════ */
+.auth-cube-container {
+  perspective: 1000px;
+  width: 100%;
+  height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.auth-cube {
+  width: 130px;
+  height: 130px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(-25deg) rotateY(35deg);
+  animation: authCubeSpin 24s linear infinite;
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+@keyframes authCubeSpin {
+  0% {
+    transform: rotateX(-25deg) rotateY(0deg);
+  }
+
+  100% {
+    transform: rotateX(-25deg) rotateY(360deg);
+  }
+}
+
+.auth-cube-face {
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  border: 2px solid rgba(210, 232, 35, 0.45) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  box-shadow:
+    inset 0 0 25px rgba(210, 232, 35, 0.12),
+    0 10px 30px rgba(0, 0, 0, 0.4) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s ease, background 0.3s ease;
+  will-change: transform;
+}
+
+.auth-cube-face svg {
+  transition: transform 0.3s ease, filter 0.3s ease;
+  filter: drop-shadow(0 0 6px rgba(210, 232, 35, 0.3));
+}
+
+.auth-cube:hover .auth-cube-face {
+  border-color: rgba(210, 232, 35, 0.85) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.auth-cube:hover .auth-cube-face svg {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 8px rgba(210, 232, 35, 0.7));
+}
+
+/* Face positions */
+.auth-face-front {
+  transform: rotateY(0deg) translateZ(65px);
+}
+
+.auth-face-back {
+  transform: rotateY(180deg) translateZ(65px);
+}
+
+.auth-face-right {
+  transform: rotateY(90deg) translateZ(65px);
+}
+
+.auth-face-left {
+  transform: rotateY(-90deg) translateZ(65px);
+}
+
+.auth-face-top {
+  transform: rotateX(90deg) translateZ(65px);
+}
+
+.auth-face-bottom {
+  transform: rotateX(-90deg) translateZ(65px);
+}
+
+/* Shake animation for security breaches */
+.animate-shake {
+  animation: shake 0.5s cubic-bezier(.36, .07, .19, .97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+@keyframes shake {
+
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   MOTION GRAPHICS — FLOATING PARTICLES
+   ═══════════════════════════════════════════════ */
+@keyframes float-particle {
+
+  0%,
+  100% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0.4;
+  }
+
+  25% {
+    transform: translateY(-60px) translateX(20px) scale(1.2);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: translateY(-120px) translateX(-15px) scale(0.9);
+    opacity: 0.5;
+  }
+
+  75% {
+    transform: translateY(-80px) translateX(30px) scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes float-particle-reverse {
+
+  0%,
+  100% {
+    transform: translateY(0) translateX(0) scale(1);
+    opacity: 0.3;
+  }
+
+  25% {
+    transform: translateY(50px) translateX(-25px) scale(1.15);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: translateY(100px) translateX(20px) scale(0.85);
+    opacity: 0.4;
+  }
+
+  75% {
+    transform: translateY(60px) translateX(-10px) scale(1.05);
+    opacity: 0.5;
+  }
+}
+
+.motion-particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  will-change: transform, opacity;
+}
+
+.motion-particle-1 {
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, rgba(210, 232, 35, 0.8), transparent);
+  animation: float-particle 8s ease-in-out infinite;
+}
+
+.motion-particle-2 {
+  width: 4px;
+  height: 4px;
+  background: radial-gradient(circle, rgba(210, 232, 35, 0.6), transparent);
+  animation: float-particle-reverse 10s ease-in-out infinite 1s;
+}
+
+.motion-particle-3 {
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, rgba(210, 232, 35, 0.5), transparent);
+  animation: float-particle 12s ease-in-out infinite 2s;
+}
+
+.motion-particle-4 {
+  width: 3px;
+  height: 3px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.6), transparent);
+  animation: float-particle-reverse 9s ease-in-out infinite 0.5s;
+}
+
+.motion-particle-5 {
+  width: 5px;
+  height: 5px;
+  background: radial-gradient(circle, rgba(210, 232, 35, 0.45), transparent);
+  animation: float-particle 11s ease-in-out infinite 3s;
+}
+
+/* ═══════════════════════════════════════════════
+   MOTION GRAPHICS — AMBIENT PULSE GLOW
+   ═══════════════════════════════════════════════ */
+@keyframes ambient-pulse {
+
+  0%,
+  100% {
+    opacity: 0.08;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.18;
+    transform: scale(1.05);
+  }
+}
+
+.ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+  animation: ambient-pulse 6s ease-in-out infinite;
+  will-change: opacity, transform;
+  z-index: 0;
+}
+
+.ambient-glow-acid {
+  background: radial-gradient(circle, rgba(210, 232, 35, 0.4), transparent 70%);
+}
+
+.ambient-glow-cyan {
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.3), transparent 70%);
+  animation-delay: 3s;
+}
+
+.ambient-glow-amber {
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.25), transparent 70%);
+  animation-delay: 1.5s;
+}
+
+/* ═══════════════════════════════════════════════
+   MOTION GRAPHICS — MORPHING BLOB
+   ═══════════════════════════════════════════════ */
+@keyframes morph-blob {
+
+  0%,
+  100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  }
+
+  25% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
+
+  50% {
+    border-radius: 50% 60% 30% 60% / 30% 50% 70% 50%;
+  }
+
+  75% {
+    border-radius: 40% 60% 50% 40% / 60% 40% 60% 30%;
+  }
+}
+
+.morph-blob {
+  animation: morph-blob 15s ease-in-out infinite;
+  will-change: border-radius;
+}
+
+/* ═══════════════════════════════════════════════
+   MOTION GRAPHICS — GRADIENT SHIFT BACKGROUND
+   ═══════════════════════════════════════════════ */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.gradient-shift-bg {
+  background: linear-gradient(135deg,
+      rgba(210, 232, 35, 0.05),
+      rgba(34, 211, 238, 0.04),
+      rgba(251, 191, 36, 0.03),
+      rgba(210, 232, 35, 0.05));
+  background-size: 400% 400%;
+  animation: gradient-shift 12s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════
+   MOTION GRAPHICS — SCANNING LINE EFFECT
+   ═══════════════════════════════════════════════ */
+@keyframes scan-line {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.3;
+  }
+
+  90% {
+    opacity: 0.3;
+  }
+
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+.scan-line-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(210, 232, 35, 0.5), transparent);
+  animation: scan-line 8s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ═══════════════════════════════════════════════
+   MOTION GRAPHICS — CARD HOVER LIFT & GLOW
+   ═══════════════════════════════════════════════ */
+.motion-card {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.motion-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(210, 232, 35, 0.15),
+    0 0 30px rgba(210, 232, 35, 0.05);
+}
+
+/* ═══════════════════════════════════════════════
+   MOTION GRAPHICS — TYPING CURSOR BLINK
+   ═══════════════════════════════════════════════ */
+@keyframes cursor-blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: #D2E823;
+  margin-left: 2px;
+  animation: cursor-blink 1s step-end infinite;
+}
+
+/* ═══════════════════════════════════════════════
+   MOTION GRAPHICS — STAGGER FADE IN
+   ═══════════════════════════════════════════════ */
+@keyframes stagger-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-child {
+  opacity: 0;
+  animation: stagger-fade-in 0.5s ease-out forwards;
+}
+
+.stagger-child:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.stagger-child:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.stagger-child:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.stagger-child:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+.stagger-child:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+.stagger-child:nth-child(6) {
+  animation-delay: 0.3s;
+}
+
+.stagger-child:nth-child(7) {
+  animation-delay: 0.35s;
+}
+
+.stagger-child:nth-child(8) {
+  animation-delay: 0.4s;
+}
+
+.stagger-child:nth-child(9) {
+  animation-delay: 0.45s;
+}
+
+.stagger-child:nth-child(10) {
+  animation-delay: 0.5s;
+}
+
+/* ═══════════════════════════════════════════════
+   MOTION GRAPHICS — CODE RAIN DRIP
+   ═══════════════════════════════════════════════ */
+@keyframes code-rain {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.7;
+  }
+
+  90% {
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+.code-rain-drop {
+  position: absolute;
+  font-family: 'Fira Code', monospace;
+  font-size: 10px;
+  color: rgba(210, 232, 35, 0.15);
+  pointer-events: none;
+  animation: code-rain linear infinite;
+  white-space: nowrap;
+  z-index: 0;
+}
+
+/* ═══════════════════════════════════════════════
+   THEME STYLES ENGINE
+   ═══════════════════════════════════════════════ */
+
+/* Apply base CSS Variables for colors */
+:root {
+  --theme-bg: #F8F4E8;
+  --theme-ink: #09090B;
+  --theme-accent: #D2E823;
+  --theme-cream: #FFFEF9;
+  --theme-muted: #E8E4D8;
+  --theme-border: #09090B;
+}
+
+/* Light / Default Theme overrides */
+html.light,
+html:not([class*="theme-"]) {
+  --theme-bg: #F8F4E8;
+  --theme-ink: #09090B;
+  --theme-accent: #D2E823;
+  --theme-cream: #FFFEF9;
+  --theme-muted: #E8E4D8;
+  --theme-border: #09090B;
+}
+
+/* Dark Mode Theme */
+html.theme-dark {
+  --theme-bg: #09090B;
+  --theme-ink: #F8F4E8;
+  --theme-accent: #D2E823;
+  --theme-cream: #18181b;
+  --theme-muted: #27272a;
+  --theme-border: #F8F4E8;
+}
+
+/* Cyberpunk / Matrix Theme */
+html.theme-matrix {
+  --theme-bg: #000000;
+  --theme-ink: #00ff66;
+  --theme-accent: #00ff66;
+  --theme-cream: #09090b;
+  --theme-muted: #111827;
+  --theme-border: #00ff66;
+}
+
+/* Royal Gold Theme */
+html.theme-royal {
+  --theme-bg: #0f172a;
+  --theme-ink: #fbbf24;
+  --theme-accent: #fbbf24;
+  --theme-cream: #1e293b;
+  --theme-muted: #334155;
+  --theme-border: #fbbf24;
+}
+
+/* Neon Retro Cyber Theme */
+html.theme-neon {
+  --theme-bg: #05050a;
+  --theme-ink: #f43f5e;
+  --theme-accent: #06b6d4;
+  --theme-cream: #0e0e1e;
+  --theme-muted: #1e1b4b;
+  --theme-border: #f43f5e;
+}
+
+/* Global Overrides when a dark/custom theme is active */
+html.theme-dark,
+html.theme-matrix,
+html.theme-royal,
+html.theme-neon {
+  background-color: var(--theme-bg) !important;
+  color: var(--theme-ink) !important;
+}
+
+/* Overrides for hardcoded layout wrapper backgrounds */
+html.theme-dark .bg-\[\#F8F4E8\],
+html.theme-matrix .bg-\[\#F8F4E8\],
+html.theme-royal .bg-\[\#F8F4E8\],
+html.theme-neon .bg-\[\#F8F4E8\] {
+  background-color: var(--theme-bg) !important;
+}
+
+/* Overrides for hardcoded text colors */
+html.theme-dark [class*="text-[#09090B]"],
+html.theme-matrix [class*="text-[#09090B]"],
+html.theme-royal [class*="text-[#09090B]"],
+html.theme-neon [class*="text-[#09090B]"] {
+  color: var(--theme-ink) !important;
+}
+
+/* Overrides for hardcoded dark backgrounds to theme background */
+html.theme-dark [class*="bg-[#09090B]"],
+html.theme-matrix [class*="bg-[#09090B]"],
+html.theme-royal [class*="bg-[#09090B]"],
+html.theme-neon [class*="bg-[#09090B]"] {
+  background-color: var(--theme-ink) !important;
+  color: var(--theme-bg) !important;
+}
+
+/* Overrides for white/beige cards/textareas */
+html.theme-dark [class*="bg-white"],
+html.theme-matrix [class*="bg-white"],
+html.theme-royal [class*="bg-white"],
+html.theme-neon [class*="bg-white"] {
+  background-color: var(--theme-cream) !important;
+}
+
+/* Overrides for hardcoded dark borders */
+html.theme-dark [class*="border-[#09090B]"],
+html.theme-matrix [class*="border-[#09090B]"],
+html.theme-royal [class*="border-[#09090B]"],
+html.theme-neon [class*="border-[#09090B]"] {
+  border-color: var(--theme-border) !important;
+}
+
+html.theme-dark .border-black\/10,
+html.theme-matrix .border-black\/10,
+html.theme-royal .border-black\/10,
+html.theme-neon .border-black\/10 {
+  border-color: var(--theme-muted) !important;
+}
+
+/* Overrides for dynamic dot pattern */
+html.theme-dark .dot-pattern,
+html.theme-matrix .dot-pattern,
+html.theme-royal .dot-pattern,
+html.theme-neon .dot-pattern {
+  background-image: radial-gradient(circle, var(--theme-ink) 1px, transparent 1px) !important;
+}
+
+/* Overrides for active border accents (neon box shadows, glows, and borders) */
+html.theme-dark .glass-outer,
+html.theme-matrix .glass-outer,
+html.theme-royal .glass-outer,
+html.theme-neon .glass-outer {
+  background: rgba(9, 9, 11, 0.45) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--theme-ink) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+html.theme-dark .glass-inner,
+html.theme-matrix .glass-inner,
+html.theme-royal .glass-inner,
+html.theme-neon .glass-inner {
+  background: rgba(9, 9, 11, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: var(--theme-ink) !important;
+}
+
+/* Overrides for the brutal-shadows */
+html.theme-dark .brutal-shadow,
+html.theme-matrix .brutal-shadow,
+html.theme-royal .brutal-shadow,
+html.theme-neon .brutal-shadow {
+  box-shadow: 4px 4px 0px 0px var(--theme-border) !important;
+}
+
+html.theme-dark .brutal-shadow-sm,
+html.theme-matrix .brutal-shadow-sm,
+html.theme-royal .brutal-shadow-sm,
+html.theme-neon .brutal-shadow-sm {
+  box-shadow: 2px 2px 0px 0px var(--theme-border) !important;
+}
+
+html.theme-dark .brutal-border,
+html.theme-matrix .brutal-border,
+html.theme-royal .brutal-border,
+html.theme-neon .brutal-border {
+  border: 2px solid var(--theme-border) !important;
+}
+
+html.theme-dark .brutal-border-thick,
+html.theme-matrix .brutal-border-thick,
+html.theme-royal .brutal-border-thick,
+html.theme-neon .brutal-border-thick {
+  border: 4px solid var(--theme-border) !important;
+}
+
+/* Overrides for custom style tags of Matrix and Royal in Homepage.tsx */
+html.theme-matrix .bg-cyan-400 {
+  background-color: #00ff66 !important;
+}
+
+html.theme-matrix .bg-amber-400 {
+  background-color: #00ff66 !important;
+}
+
+html.theme-matrix .text-\[\#F8F4E8\] {
+  color: #00ff66 !important;
+}
+
+html.theme-matrix svg {
+  stroke: #00ff66 !important;
+}
+
+html.theme-royal .bg-cyan-400 {
+  background-color: #fbbf24 !important;
+}
+
+html.theme-royal .bg-amber-400 {
+  background-color: #fbbf24 !important;
+}
+
+html.theme-royal .text-\[\#F8F4E8\] {
+  color: #fbbf24 !important;
+}
+
+html.theme-royal svg {
+  stroke: #fbbf24 !important;
+}
+
+html.theme-neon .bg-cyan-400 {
+  background-color: #06b6d4 !important;
+}
+
+html.theme-neon .bg-amber-400 {
+  background-color: #f43f5e !important;
+}
+
+html.theme-neon .text-\[\#F8F4E8\] {
+  color: #f43f5e !important;
+}
+
+html.theme-neon svg {
+  stroke: #06b6d4 !important;
+}
