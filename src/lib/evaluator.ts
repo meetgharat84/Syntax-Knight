@@ -145,8 +145,8 @@ export function checkMatchingBrackets(code: string): { isValid: boolean; errorMs
         }
         const top = stack.pop()!;
         const matchPair = (top.char === '(' && char === ')') ||
-                          (top.char === '[' && char === ']') ||
-                          (top.char === '{' && char === '}');
+          (top.char === '[' && char === ']') ||
+          (top.char === '{' && char === '}');
         if (!matchPair) {
           return { isValid: false, errorMsg: `Mismatched bracket: '${top.char}' opened on line ${top.line} closed with '${char}' on line ${i + 1}` };
         }
