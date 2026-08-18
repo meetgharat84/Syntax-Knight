@@ -1920,14 +1920,14 @@ export default function Homepage() {
           'Authorization': `Bearer ${API_KEY}`
         },
         body: JSON.stringify({
-          model: selectedAiModel,
+          model: "openrouter/auto",
           messages: [
             {
               role: "user",
               content: promptText
             }
           ],
-          max_tokens: 1500
+          max_tokens: 500
         })
       });
 

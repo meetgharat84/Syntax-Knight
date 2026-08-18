@@ -118,14 +118,14 @@ Provide direct, concise, and helpful advice. Keep the response under 100 words. 
           'Authorization': `Bearer ${OPENROUTER_KEY}`
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
+          model: "openrouter/auto",
           messages: [
             {
               role: "user",
               content: promptContext
             }
           ],
-          max_tokens: 1500
+          max_tokens: 500
         })
       });
 

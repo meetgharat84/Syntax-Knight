@@ -63,14 +63,14 @@ Return ONLY a valid, single JSON object containing exactly the following keys, w
         'Authorization': `Bearer ${API_KEY}`
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "openrouter/auto",
         messages: [
           {
             role: "user",
             content: structuredPrompt
           }
         ],
-        max_tokens: 2000
+        max_tokens: 500
       })
     });
 
