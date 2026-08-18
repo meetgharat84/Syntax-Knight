@@ -1,4 +1,4 @@
-# ⚔️ SyntaxKnight — Cyberpunk Code Combat & AI-Powered Learning Platform
+# ⚔️ SyntaxKnight — Code & AI-Powered Learning Platform
 
 > **Academic Project Submission & Capstone Portfolio**  
 > An immersive, full-stack gamified web application built to accelerate programming mastery through real-time code challenges, age-tailored access control, token economy shop, and an integrated AI **Cyber Mentor**.
