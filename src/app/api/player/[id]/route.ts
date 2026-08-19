@@ -101,10 +101,18 @@ export async function PUT(
     };
 
     // If cleanId is an email address or supabaseId, attach it to safeSetFields
-    if (cleanId.includes('@') && !safeSetFields.email) {
-      safeSetFields.email = cleanId.toLowerCase();
-    } else if (!cleanId.includes('@') && !safeSetFields.supabaseId) {
-      safeSetFields.supabaseId = cleanId;
+    if (cleanId.includes('@')) {
+      if (!safeSetFields.email) safeSetFields.email = cleanId.toLowerCase();
+    } else {
+      if (!safeSetFields.supabaseId) safeSetFields.supabaseId = cleanId;
+      if (!safeSetFields.email) {
+        const sanitized = cleanId.toLowerCase().replace(/[^a-z0-9._-]/g, '') || 'player';
+        safeSetFields.email = `${sanitized}@player.syntaxknight.local`;
+      }
+    }
+
+    if (!safeSetFields.playerName) {
+      safeSetFields.playerName = cleanId;
     }
 
     const user = await User.findOneAndUpdate(
