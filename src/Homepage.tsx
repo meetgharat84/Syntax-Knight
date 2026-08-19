@@ -1885,72 +1885,43 @@ export default function Homepage() {
   const handleMentorChatSubmitDirectly = async (promptText: string) => {
     setIsMentorTyping(true);
 
-    if (!API_KEY || API_KEY.startsWith('your_real_')) {
-      setTimeout(() => {
-        let reply = "";
-        const lowerInput = promptText.toLowerCase();
-        if (lowerInput.includes('explain') || lowerInput.includes('level') || lowerInput.includes('analogy')) {
-          reply = `💡 **Level Guide**: To complete this level, inspect the LEVEL INSTRUCTION card above. Ensure your tag or syntax matches the requested blueprint!`;
-        } else if (lowerInput.includes('div') || lowerInput.includes('container')) {
-          reply = `📦 **HTML Container**: \`<div>\` is a block-level element used for grouping content. Example: \`<div id="var_1">Container</div>\`.`;
-        } else if (lowerInput.includes('h1') || lowerInput.includes('heading')) {
-          reply = `🏷️ **HTML Heading**: Create a heading using \`<h1>Header Text</h1>\`. Make sure to close the tag!`;
-        } else {
-          reply = `🤖 **AI Assistant**: Inspect your code logic carefully. Make sure all tags are closed properly, or click **HINT** to see the required format. (Optional: Set \`NEXT_PUBLIC_OPENROUTER_API_KEY\` in your \`.env.local\` to enable live cloud AI calls).`;
-        }
-
-        setMentorMessages(prev => [...prev, {
-          sender: 'ai',
-          text: reply,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }]);
-        setIsMentorTyping(false);
-        audioEngine.playSuccessChime();
-      }, 700);
-      return;
-    }
-
     try {
-      const endpoint = 'https://openrouter.ai/api/v1/chat/completions';
-
-      const response = await fetch(endpoint, {
+      const response = await fetch('/api/ai/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: "openrouter/auto",
-          messages: [
-            {
-              role: "user",
-              content: promptText
-            }
-          ],
-          max_tokens: 500
-        })
+          prompt: promptText,
+          currentCode: userCode,
+          activeFile: arenaChallenge?.title || 'workspace',
+          history: mentorMessages.slice(-4).map(m => ({
+            role: m.sender === 'ai' ? 'assistant' : 'user',
+            content: m.text,
+          })),
+        }),
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
-      }
       const data = await response.json();
-      const aiReply = data.choices?.[0]?.message?.content || "The oracle signal is weak. Revise your variables and retry.";
+      const aiReply = data.reply || 'Review your code syntax carefully and retry.';
 
-      setMentorMessages(prev => [...prev, {
-        sender: 'ai',
-        text: aiReply,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }]);
+      setMentorMessages(prev => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: aiReply,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+      ]);
       audioEngine.playSuccessChime();
     } catch (err: any) {
-      console.error(err);
-      setMentorMessages(prev => [...prev, {
-        sender: 'ai',
-        text: `⚠️ Link transmission failed: ${err.message || err}. Verify your network or credentials and retry.`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }]);
+      console.error('[AI_MENTOR_ERROR]', err);
+      setMentorMessages(prev => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: `🤖 **Cyber Mentor**: Review the target code blueprint above. Ensure all tags and brackets match the expected structure.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+      ]);
       audioEngine.playErrorBuzzer();
     } finally {
       setIsMentorTyping(false);
@@ -2215,76 +2186,43 @@ export default function Homepage() {
     setMentorMessages(prev => [...prev, newMsg]);
     setIsMentorTyping(true);
 
-    if (!API_KEY || API_KEY.startsWith('your_real_')) {
-      setTimeout(() => {
-        let reply = "";
-        const lowerInput = userText.toLowerCase();
-        if (lowerInput.includes('explain') || lowerInput.includes('level') || lowerInput.includes('analogy')) {
-          reply = `💡 **Level Guide**: To complete this level, inspect the LEVEL INSTRUCTION card above. Ensure your tag or syntax matches the requested blueprint!`;
-        } else if (lowerInput.includes('div') || lowerInput.includes('container')) {
-          reply = `📦 **HTML Container**: \`<div>\` is a block-level element used for grouping content. Example: \`<div id="var_1">Container</div>\`.`;
-        } else if (lowerInput.includes('h1') || lowerInput.includes('heading')) {
-          reply = `🏷️ **HTML Heading**: Create a heading using \`<h1>Header Text</h1>\`. Make sure to close the tag!`;
-        } else {
-          reply = `🤖 **AI Assistant**: Inspect your code logic carefully. Make sure all tags are closed properly, or click **HINT** to see the required format. (Optional: Set \`NEXT_PUBLIC_OPENROUTER_API_KEY\` in your \`.env.local\` to enable live cloud AI calls).`;
-        }
-
-        setMentorMessages(prev => [...prev, {
-          sender: 'ai',
-          text: reply,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }]);
-        setIsMentorTyping(false);
-        audioEngine.playSuccessChime();
-      }, 700);
-      return;
-    }
-
     try {
-      const endpoint = 'https://openrouter.ai/api/v1/chat/completions';
-
-      const response = await fetch(endpoint, {
+      const response = await fetch('/api/ai/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${API_KEY}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
-          messages: [
-            {
-              role: "system",
-              content: "You are the elite Cyber Mentor in SyntaxKnight. Help the user with their coding query."
-            },
-            {
-              role: "user",
-              content: `ACTIVE WORKSPACE CODE:\n\`\`\`\n${userCode}\n\`\`\`\n\nUSER PROMPT: ${userText}`
-            }
-          ],
-          max_tokens: 1500
-        })
+          prompt: userText,
+          currentCode: userCode,
+          activeFile: arenaChallenge?.title || 'workspace',
+          history: mentorMessages.slice(-4).map(m => ({
+            role: m.sender === 'ai' ? 'assistant' : 'user',
+            content: m.text,
+          })),
+        }),
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
-      }
       const data = await response.json();
-      const aiReply = data.choices?.[0]?.message?.content || "The oracle signal is weak. Revise your variables and retry.";
+      const aiReply = data.reply || 'Review your code syntax carefully and retry.';
 
-      setMentorMessages(prev => [...prev, {
-        sender: 'ai',
-        text: aiReply,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }]);
+      setMentorMessages(prev => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: aiReply,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+      ]);
       audioEngine.playSuccessChime();
     } catch (err: any) {
-      console.error(err);
-      setMentorMessages(prev => [...prev, {
-        sender: 'ai',
-        text: `⚠️ Link transmission failed: ${err.message || err}. Verify your network or credentials and retry.`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }]);
+      console.error('[AI_MENTOR_ERROR]', err);
+      setMentorMessages(prev => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: `🤖 **Cyber Mentor**: Check your code syntax in the editor and ensure all opening tags have matching closing tags.`,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+      ]);
       audioEngine.playErrorBuzzer();
     } finally {
       setIsMentorTyping(false);

@@ -70,85 +70,43 @@ export default function AiMentorDrawer({ isOpen, onClose, currentCode, activeFil
     setMessages(prev => [...prev, newMsg]);
     setIsTyping(true);
 
-    // Smart Local Fallback if API key is not configured
-    if (!isKeyAuthorized) {
-      setTimeout(() => {
-        let reply = "";
-        const lowerInput = userText.toLowerCase();
-        if (lowerInput.includes('explain') || lowerInput.includes('level') || lowerInput.includes('analogy')) {
-          reply = `💡 **Level Guide**: To complete this level in \`${activeFile}\`, inspect the instruction box above. Make sure your tag syntax or variable declaration matches the requested format!`;
-        } else if (lowerInput.includes('div') || lowerInput.includes('container')) {
-          reply = `📦 **HTML Container**: \`<div>\` is a block-level container used to group elements together. Use \`<div id="var_1">Content</div>\` to complete this task.`;
-        } else if (lowerInput.includes('h1') || lowerInput.includes('heading')) {
-          reply = `🏷️ **HTML Heading**: Use \`<h1>Header Text</h1>\` to create top-level headings. Make sure you don't miss the closing tag!`;
-        } else {
-          reply = `🤖 **AI Assistant**: Inspect your code in \`${activeFile}\`. Ensure tags are properly opened and closed, or click the **HINT** button to check the exact syntax requirement.`;
-        }
-
-        setMessages(prev => [...prev, {
-          sender: 'ai',
-          text: reply,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }]);
-        setIsTyping(false);
-        audioEngine.playSuccessChime();
-      }, 700);
-      return;
-    }
-
     try {
-      const endpoint = 'https://openrouter.ai/api/v1/chat/completions';
-      
-      const promptContext = `
-You are the AI Mentor for SyntaxKnight, a Neo-Brutalist coding education application.
-The user is working in file: "${activeFile}".
-Current workspace editor contents:
-\`\`\`
-${currentCode}
-\`\`\`
-
-The user is asking: "${userText}".
-Provide direct, concise, and helpful advice. Keep the response under 100 words. Highlight code syntax with standard markdown.
-`;
-
-      const response = await fetch(endpoint, {
+      const response = await fetch('/api/ai/chat', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENROUTER_KEY}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: "openrouter/auto",
-          messages: [
-            {
-              role: "user",
-              content: promptContext
-            }
-          ],
-          max_tokens: 500
-        })
+          prompt: userText,
+          currentCode,
+          activeFile,
+          history: messages.slice(-4).map(m => ({
+            role: m.sender === 'ai' ? 'assistant' : 'user',
+            content: m.text,
+          })),
+        }),
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP Error: status ${response.status}`);
-      }
-
       const data = await response.json();
-      const aiResponse = data.choices?.[0]?.message?.content || "Check your syntax bindings and retry.";
+      const aiResponse = data.reply || 'Check your syntax bindings and retry.';
 
-      setMessages(prev => [...prev, {
-        sender: 'ai',
-        text: aiResponse,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }]);
+      setMessages(prev => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: aiResponse,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+      ]);
       audioEngine.playSuccessChime();
     } catch (err) {
       console.error('[AI_MENTOR_DRAWER_ERROR]', err);
-      setMessages(prev => [...prev, {
-        sender: 'ai',
-        text: '💡 **Hint**: Make sure your HTML tag or variable declaration matches the instructions above.',
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      }]);
+      setMessages(prev => [
+        ...prev,
+        {
+          sender: 'ai',
+          text: '💡 **Hint**: Make sure your HTML tag or variable declaration matches the instructions above.',
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+      ]);
       audioEngine.playErrorBuzzer();
     } finally {
       setIsTyping(false);
