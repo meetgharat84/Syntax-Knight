@@ -18,11 +18,14 @@ export async function GET(
     await connectToDatabase();
     const { id } = await params;
     const cleanId = String(id).trim();
+    const sanitizedEmail = `${cleanId.toLowerCase().replace(/[^a-z0-9._-]/g, '')}@player.syntaxknight.local`;
 
     const user = await User.findOne({
       $or: [
         { supabaseId: cleanId },
         { email: cleanId.toLowerCase() },
+        { playerName: new RegExp(`^${cleanId}$`, 'i') },
+        { email: sanitizedEmail },
         ...(mongoose.Types.ObjectId.isValid(cleanId) ? [{ _id: cleanId }] : [])
       ],
     });
@@ -57,6 +60,7 @@ export async function PUT(
     await connectToDatabase();
     const { id } = await params;
     const cleanId = String(id).trim();
+    const sanitizedEmail = `${cleanId.toLowerCase().replace(/[^a-z0-9._-]/g, '')}@player.syntaxknight.local`;
     const body = await request.json();
 
     // Sanitize body keys & Whitelist all valid game progress properties
@@ -96,6 +100,8 @@ export async function PUT(
       $or: [
         { supabaseId: cleanId },
         { email: cleanId.toLowerCase() },
+        { playerName: new RegExp(`^${cleanId}$`, 'i') },
+        { email: sanitizedEmail },
         ...(mongoose.Types.ObjectId.isValid(cleanId) ? [{ _id: cleanId }] : [])
       ]
     };
@@ -106,8 +112,7 @@ export async function PUT(
     } else {
       if (!safeSetFields.supabaseId) safeSetFields.supabaseId = cleanId;
       if (!safeSetFields.email) {
-        const sanitized = cleanId.toLowerCase().replace(/[^a-z0-9._-]/g, '') || 'player';
-        safeSetFields.email = `${sanitized}@player.syntaxknight.local`;
+        safeSetFields.email = sanitizedEmail;
       }
     }
 

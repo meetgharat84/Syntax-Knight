@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { audioEngine } from './audioEngine';
 import { useUser } from './context/UserContext';
+import { useGame } from './GameContext';
 
 // Interfaces for our state matrix
 interface UserProfile {
@@ -40,6 +41,7 @@ interface UserProfile {
 
 export default function AuthMatrix() {
   const { login } = useUser();
+  const { setPlayerProfile, syncWithMongoDB } = useGame();
 
   // Onboarding Modal States for Google Sign-In Users
   const [showOnboardingModal, setShowOnboardingModal] = useState<boolean>(false);
@@ -186,6 +188,8 @@ export default function AuthMatrix() {
         const token = await signSession(profile);
         setSessionToken(token);
         await login(profile);
+        setPlayerProfile(profile.fullName.toUpperCase(), data.user.track || 'Frontend');
+        await syncWithMongoDB(profile.email || profile.fullName);
         return;
       }
     } catch (err) {
@@ -270,6 +274,8 @@ export default function AuthMatrix() {
     const token = await signSession(profile);
     setSessionToken(token);
     await login(profile);
+    setPlayerProfile(profile.fullName.toUpperCase(), onboardingTrack || 'Frontend');
+    await syncWithMongoDB(profile.email || profile.fullName);
 
     audioEngine.playSuccessChime();
     setIsOnboardingSubmitting(false);

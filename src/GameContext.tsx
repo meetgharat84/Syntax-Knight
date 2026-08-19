@@ -202,6 +202,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
+  // Initial sync with MongoDB on mount if player name exists
+  useEffect(() => {
+    if (saveData.playerName) {
+      syncWithMongoDB(saveData.playerName);
+    }
+  }, [saveData.playerName, syncWithMongoDB]);
+
   // Unified non-blocking Auto-save effect for LocalStorage & MongoDB
   useEffect(() => {
     const payload: SaveData = {
@@ -227,7 +234,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const setPlayerProfile = useCallback((name: string, track: string) => {
     setPlayerName(name);
     setPlayerTrack(track);
-  }, []);
+    if (name) {
+      currentUserIdRef.current = name;
+      syncWithMongoDB(name);
+    }
+  }, [syncWithMongoDB]);
 
   const levelUp = useCallback(() => {
     setPlayerLevel(prev => {

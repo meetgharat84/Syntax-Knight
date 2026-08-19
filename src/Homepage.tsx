@@ -1274,25 +1274,29 @@ export default function Homepage() {
   // Load and listen to Supabase Authentication & Sync MongoDB
   useEffect(() => {
     const syncUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        const user = session.user;
-        const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'KNIGHT';
-        setPlayerProfile(name.toUpperCase(), (user.user_metadata?.track || 'Frontend') as any);
-        syncWithMongoDB(user.id);
-        setCurrentScreen('dashboard');
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const user = session.user;
+          const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'KNIGHT';
+          setPlayerProfile(name.toUpperCase(), (user.user_metadata?.track || 'Frontend') as any);
+          syncWithMongoDB(user.id);
+          setCurrentScreen('dashboard');
+        }
+      } catch (err) {
+        console.warn('Supabase auth session fetch error:', err);
       }
     };
     syncUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event: any, session: any) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
       if (session?.user) {
         const user = session.user;
         const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'KNIGHT';
         setPlayerProfile(name.toUpperCase(), (user.user_metadata?.track || 'Frontend') as any);
         syncWithMongoDB(user.id);
         setCurrentScreen('dashboard');
-      } else {
+      } else if (event === 'SIGNED_OUT') {
         setPlayerProfile('', '');
         setCurrentScreen('home');
       }
