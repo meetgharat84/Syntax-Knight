@@ -206,27 +206,27 @@ function CSSPlayground() {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 100, damping: 15 }}
-      className="h-screen overflow-hidden bg-transparent text-[#09090B] flex flex-col md:flex-row relative noise-overlay"
+      className="min-h-screen lg:h-screen overflow-y-auto lg:overflow-hidden bg-transparent text-[#09090B] flex flex-col lg:flex-row relative noise-overlay"
     >
 
       {/* ───────── LEFT PANEL — The Alchemist Quest Guide (35%) ───────── */}
-      <aside className="w-full md:w-[35%] lg:w-[33%] flex flex-col border-r-4 border-[#09090B] glass-outer overflow-y-auto shrink-0 text-[#09090B] shadow-brutal-glass-lg">
+      <aside className="w-full lg:w-[35%] lg:min-w-[320px] flex flex-col border-b-4 lg:border-b-0 lg:border-r-4 border-[#09090B] glass-outer overflow-y-auto shrink-0 text-[#09090B] shadow-brutal-glass-lg">
 
         {/* Top Bar */}
-        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b-2 border-[#09090B]/10 bg-transparent sticky top-0 z-20 text-[#09090B]">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-6 py-3 sm:py-4 border-b-2 border-[#09090B]/10 bg-transparent sticky top-0 z-20 text-[#09090B]">
           <button
             onClick={() => {
               audioEngine.playClickSound();
               navigate('/');
             }}
-            className="flex items-center gap-2 text-xs text-[#09090B]/60 hover:text-[#09090B] transition-colors group cursor-pointer font-bold font-body"
+            className="flex items-center gap-2 text-xs text-[#09090B]/60 hover:text-[#09090B] transition-colors group cursor-pointer font-bold font-body min-h-[44px] px-2"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
             <span className="font-code tracking-wider">BACK TO HQ</span>
           </button>
 
           {/* Compact Player HUD */}
-          <div className="hidden lg:flex items-center glass-inner px-3.5 py-1 rounded-lg gap-3 text-[10px] select-none shadow-brutal-glass-sm text-[#09090B]">
+          <div className="flex items-center glass-inner px-3 sm:px-3.5 py-1 rounded-lg gap-2.5 sm:gap-3 text-[10px] select-none shadow-brutal-glass-sm text-[#09090B] min-h-[38px]">
             <div className="flex items-center gap-1">
               <span className="text-[#09090B]/50 tracking-wider">KNIGHT:</span>
               <span className="font-bold text-[#09090B] font-code uppercase">{playerName || 'RECRUIT'}</span>
@@ -238,7 +238,7 @@ function CSSPlayground() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-[#D2E823] border-2 border-[#09090B] text-[#09090B] shadow-brutal-glass-sm">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#D2E823] border-2 border-[#09090B] text-[#09090B] shadow-brutal-glass-sm">
             <Palette className="w-3.5 h-3.5" />
             <span className="text-[10px] font-code font-bold tracking-wider">WORLD 2: CSS</span>
           </div>
@@ -468,24 +468,24 @@ function CSSPlayground() {
         </section>
 
         {/* ── THE ALCHEMIST TERMINAL (Bottom 35%) ── */}
-        <section className="flex-[35] flex flex-col min-h-0 overflow-hidden">
+        <section className="flex-[35] flex flex-col min-h-[260px] lg:min-h-0 overflow-hidden">
           {/* Terminal header */}
-          <div className="flex items-center justify-between px-4 sm:px-6 py-2.5 bg-[#09090B] border-b border-[#F8F4E8]/10 shrink-0">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 px-3 sm:px-6 py-2.5 bg-[#09090B] border-b border-[#F8F4E8]/10 shrink-0">
+            <div className="flex items-center gap-2.5">
               <div className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-sm bg-[#DC2626]" />
                 <div className="w-2.5 h-2.5 rounded-sm bg-[#D2E823]" />
                 <div className="w-2.5 h-2.5 rounded-sm bg-[#F8F4E8]" />
               </div>
-              <div className="flex items-center gap-1.5 bg-[#141418] border border-[#F8F4E8]/10 px-3 py-1 rounded-md">
+              <div className="flex items-center gap-1.5 bg-[#141418] border border-[#F8F4E8]/10 px-2.5 sm:px-3 py-1 rounded-md">
                 <Palette className="w-3.5 h-3.5 text-[#D2E823]" />
-                <span className="text-[10px] font-code text-[#F8F4E8]/50 tracking-wider">armory.css</span>
+                <span className="text-[9px] sm:text-[10px] font-code text-[#F8F4E8]/50 tracking-wider">armory.css</span>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={resetLevel}
-                className="flex items-center gap-1.5 text-[10px] font-code text-[#F8F4E8]/50 hover:text-[#F8F4E8] transition-colors px-2.5 py-1 rounded-md cursor-pointer"
+                className="flex items-center gap-1 text-[10px] font-code text-[#F8F4E8]/50 hover:text-[#F8F4E8] transition-colors px-2 py-1.5 rounded-md cursor-pointer min-h-[36px]"
               >
                 <RotateCcw className="w-3 h-3" /> RESET
               </button>
@@ -495,13 +495,13 @@ function CSSPlayground() {
                   setHintCount(prev => Math.min(prev + 1, 2));
                 }}
                 disabled={hintCount >= 2}
-                className="flex items-center gap-1.5 text-[10px] font-code font-bold text-[#09090B] bg-[#D2E823] border-2 border-[#D2E823] disabled:opacity-50 disabled:pointer-events-none px-3.5 py-1.5 rounded-lg transition-all hover:scale-[1.02] active:scale-95 cursor-pointer btn-press-sm shadow-brutal-glass-sm"
+                className="flex items-center gap-1.5 text-[9px] sm:text-[10px] font-code font-bold text-[#09090B] bg-[#D2E823] border-2 border-[#D2E823] disabled:opacity-50 disabled:pointer-events-none px-3 py-1.5 rounded-lg transition-all hover:scale-[1.02] active:scale-95 cursor-pointer btn-press-sm shadow-brutal-glass-sm min-h-[36px]"
               >
                 📜 Oracle Hints {hintCount > 0 && `(${hintCount}/2)`}
               </button>
               <button
                 onClick={validateAnswer}
-                className="flex items-center gap-1.5 text-[10px] font-display text-[#09090B] bg-[#D2E823] border-2 border-[#D2E823] px-4 py-1.5 rounded-lg transition-all cursor-pointer btn-press shadow-brutal-glass-sm"
+                className="flex items-center gap-1.5 text-[10px] sm:text-xs font-display text-[#09090B] bg-[#D2E823] border-2 border-[#D2E823] px-3.5 sm:px-4 py-1.5 rounded-lg transition-all cursor-pointer btn-press shadow-brutal-glass-sm font-bold min-h-[38px]"
               >
                 <Play className="w-3 h-3 fill-current" /> CAST ALCHEMY ➔
               </button>
@@ -509,7 +509,7 @@ function CSSPlayground() {
           </div>
 
           {/* Code input area */}
-          <div className="flex-1 overflow-auto bg-black/60 backdrop-blur-md p-4 sm:p-6 font-code text-[15px] leading-relaxed min-h-0">
+          <div className="flex-1 overflow-x-auto overflow-y-auto bg-black/60 backdrop-blur-md p-3 sm:p-6 font-mono text-[13px] sm:text-[15px] leading-relaxed min-h-[140px] whitespace-pre">
             <div className="space-y-1">
               {/* Static context lines */}
               <div className="text-[#F8F4E8]/55">

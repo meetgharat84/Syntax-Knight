@@ -114,16 +114,16 @@ export default function DynamicChallengePage() {
   const lineNumbers = Array.from({ length: Math.max(lineCount, 12) }, (_, i) => i + 1);
 
   return (
-    <div className="min-h-screen bg-[#F8F4E8] p-4 lg:p-6 text-[#09090B] flex flex-col gap-6">
+    <div className="min-h-screen bg-[#F8F4E8] p-3 sm:p-4 lg:p-6 text-[#09090B] flex flex-col gap-4 sm:gap-6">
       {/* Top Header Strip */}
-      <div className="glass-outer rounded-xl p-4 shadow-brutal-glass flex flex-wrap justify-between items-center gap-4 select-none">
+      <div className="glass-outer rounded-xl p-3 sm:p-4 shadow-brutal-glass flex flex-wrap justify-between items-center gap-3 sm:gap-4 select-none">
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
               audioEngine.playClickSound();
               router.push('/');
             }}
-            className="p-2 glass-inner rounded-lg border border-[#09090B]/20 hover:bg-[#D2E823]/20 cursor-pointer"
+            className="p-2.5 glass-inner rounded-lg border border-[#09090B]/20 hover:bg-[#D2E823]/20 cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
           >
             <ArrowLeft className="w-4 h-4 text-[#09090B]" />
           </button>
@@ -131,7 +131,7 @@ export default function DynamicChallengePage() {
             <span className="text-[10px] font-code font-bold text-[#09090B]/50 block uppercase">
               WORLD: {challenge.worldName.toUpperCase()}
             </span>
-            <h1 className="font-display text-sm tracking-tight text-[#09090B] uppercase">
+            <h1 className="font-display text-xs sm:text-sm tracking-tight text-[#09090B] uppercase">
               LEVEL {challenge.levelNumber}: {challenge.title}
             </h1>
           </div>
@@ -144,7 +144,7 @@ export default function DynamicChallengePage() {
                 audioEngine.playClickSound();
                 router.push(`/challenge/${prevChallenge.id}`);
               }}
-              className="px-3 py-1.5 glass-inner border border-[#09090B]/20 rounded text-[10px] font-code font-bold text-[#09090B] btn-press uppercase"
+              className="px-3 py-2 glass-inner border border-[#09090B]/20 rounded text-[10px] font-code font-bold text-[#09090B] btn-press uppercase min-h-[44px]"
             >
               ‹ PREV
             </button>
@@ -155,7 +155,7 @@ export default function DynamicChallengePage() {
                 audioEngine.playClickSound();
                 router.push(`/challenge/${nextChallenge.id}`);
               }}
-              className="px-3 py-1.5 bg-[#D2E823] border border-[#09090B] rounded text-[10px] font-display font-bold text-[#09090B] btn-press uppercase"
+              className="px-3.5 py-2 bg-[#D2E823] border border-[#09090B] rounded text-[10px] font-display font-bold text-[#09090B] btn-press uppercase min-h-[44px]"
             >
               NEXT ›
             </button>
@@ -164,10 +164,10 @@ export default function DynamicChallengePage() {
       </div>
 
       {/* Main 3-Column Arena */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 flex-grow">
 
         {/* Left Column: Codex Instructions & Study Tabs */}
-        <aside className="lg:col-span-4 glass-outer rounded-2xl p-5 flex flex-col justify-between shadow-brutal-glass text-[#09090B]">
+        <aside className="lg:col-span-4 glass-outer rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-brutal-glass text-[#09090B]">
           <div className="space-y-4">
             <div className="flex justify-between items-center border-b border-[#09090B]/10 pb-3 select-none">
               <span className="text-[10px] font-code font-bold bg-[#D2E823]/80 border border-[#09090B] px-2 py-0.5 rounded uppercase">
@@ -181,17 +181,17 @@ export default function DynamicChallengePage() {
             </div>
 
             {/* Instruction Card */}
-            <div className="p-4 bg-[#D2E823]/10 border border-[#D2E823]/30 rounded-xl shadow-sm select-text">
+            <div className="p-3.5 sm:p-4 bg-[#D2E823]/10 border border-[#D2E823]/30 rounded-xl shadow-sm select-text">
               <span className="text-[10px] font-code font-bold text-[#88a000] tracking-widest block mb-1.5 uppercase flex items-center gap-1">
                 ⚡ EXERCISE INSTRUCTION
               </span>
-              <p className="text-xs font-body font-semibold leading-relaxed text-slate-900">
+              <p className="text-xs sm:text-sm font-body font-semibold leading-relaxed text-slate-900">
                 {challenge.instructions}
               </p>
             </div>
 
             {/* Codex Tabs */}
-            <div className="flex gap-0.5 select-none pt-2">
+            <div className="flex gap-0.5 select-none pt-2 flex-wrap">
               {[
                 { key: 'analogy', label: 'ANALOGY' },
                 { key: 'blueprint', label: 'BLUEPRINT' },
@@ -203,7 +203,7 @@ export default function DynamicChallengePage() {
                     audioEngine.playClickSound();
                     setCodexTab(tab.key as any);
                   }}
-                  className={`folder-tab text-[10px] font-code font-bold py-1.5 px-3 cursor-pointer ${
+                  className={`folder-tab text-[10px] sm:text-[11px] font-code font-bold py-2 px-3 cursor-pointer min-h-[38px] ${
                     codexTab === tab.key ? 'folder-tab-active' : 'folder-tab-inactive'
                   }`}
                 >
@@ -213,10 +213,10 @@ export default function DynamicChallengePage() {
             </div>
 
             {/* Tab Body */}
-            <div className="glass-inner p-4 rounded-b-lg rounded-tr-lg min-h-[140px] text-xs font-body leading-relaxed select-text">
+            <div className="glass-inner p-4 rounded-b-lg rounded-tr-lg min-h-[140px] text-xs sm:text-sm font-body leading-relaxed select-text">
               {codexTab === 'analogy' && <p>{challenge.codex.analogy}</p>}
               {codexTab === 'blueprint' && (
-                <pre className="bg-[#09090B] text-[#D2E823] p-3 rounded font-code text-[11px] overflow-x-auto border border-[#09090B]">
+                <pre className="bg-[#09090B] text-[#D2E823] p-3 rounded font-code text-[11px] sm:text-xs overflow-x-auto border border-[#09090B] whitespace-pre">
                   {challenge.codex.blueprint.replace(/```[a-z]*/g, '').replace(/\\n/g, '\n')}
                 </pre>
               )}
@@ -230,13 +230,13 @@ export default function DynamicChallengePage() {
                   audioEngine.playClickSound();
                   setShowHint(!showHint);
                 }}
-                className="text-[11px] font-code font-bold text-[#09090B] flex items-center gap-1.5 cursor-pointer hover:underline"
+                className="text-[11px] sm:text-xs font-code font-bold text-[#09090B] flex items-center gap-1.5 cursor-pointer hover:underline min-h-[36px]"
               >
                 <Lightbulb className="w-3.5 h-3.5 text-yellow-600" />
                 {showHint ? 'Hide Oracle Clue' : 'Reveal Oracle Clue'}
               </button>
               {showHint && (
-                <div className="mt-2 p-3 bg-yellow-50 border border-yellow-300 rounded text-xs font-code text-yellow-900 select-text">
+                <div className="mt-2 p-3 bg-yellow-50 border border-yellow-300 rounded text-xs font-code text-yellow-900 select-text leading-relaxed">
                   {challenge.hint}
                 </div>
               )}
@@ -245,12 +245,12 @@ export default function DynamicChallengePage() {
         </aside>
 
         {/* Center Column: Live Code Editor */}
-        <main className="lg:col-span-5 glass-outer rounded-2xl p-0 flex flex-col justify-between overflow-hidden shadow-brutal-glass-lg bg-[#09090B] text-[#D2E823]">
+        <main className="lg:col-span-5 glass-outer rounded-2xl p-0 flex flex-col justify-between overflow-hidden shadow-brutal-glass-lg bg-[#09090B] text-[#D2E823] min-h-[340px] lg:min-h-0">
           {/* Top Bar */}
           <div className="p-3 bg-black/60 border-b border-white/10 flex justify-between items-center select-none">
             <div className="flex items-center gap-2">
               <Code className="w-4 h-4 text-[#D2E823]" />
-              <span className="text-[11px] font-code font-bold uppercase text-white/80">
+              <span className="text-[10px] sm:text-[11px] font-code font-bold uppercase text-white/80">
                 SOLUTION_EDITOR.TS
               </span>
             </div>
@@ -260,21 +260,21 @@ export default function DynamicChallengePage() {
                 setUserCode(challenge.initialCode);
                 setDiagnosticsStatus('idle');
               }}
-              className="text-[10px] font-code text-white/60 hover:text-white flex items-center gap-1 cursor-pointer"
+              className="text-[10px] font-code text-white/60 hover:text-white flex items-center gap-1 cursor-pointer min-h-[36px] px-2"
             >
               <RotateCcw className="w-3 h-3" /> RESET CODE
             </button>
           </div>
 
           {/* Textarea Code Block */}
-          <div className="flex-grow flex min-h-[220px]">
+          <div className="flex-grow flex min-h-[220px] overflow-hidden">
             {/* Gutter */}
-            <div className="w-10 bg-black/40 border-r border-white/10 py-3 select-none flex flex-col items-end pr-2 gap-[2px]">
+            <div className="w-9 sm:w-10 bg-black/40 border-r border-white/10 py-3 select-none flex flex-col items-end pr-2 gap-[2px] shrink-0">
               {lineNumbers.map((num) => (
                 <span key={num} className="text-[11px] font-code text-[#F8F4E8]/25">{num}</span>
               ))}
             </div>
-            {/* Input */}
+            {/* Input with overflow-x-auto */}
             <textarea
               value={userCode}
               onChange={(e) => {
@@ -282,17 +282,17 @@ export default function DynamicChallengePage() {
                 if (diagnosticsStatus === 'failed') setDiagnosticsStatus('idle');
               }}
               spellCheck={false}
-              className="flex-grow bg-transparent text-[#D2E823] p-3 focus:outline-none font-mono text-[14px] leading-relaxed resize-none caret-[#D2E823]"
+              className="flex-grow bg-transparent text-[#D2E823] p-3 focus:outline-none font-mono text-[13px] sm:text-[14px] leading-relaxed resize-none caret-[#D2E823] overflow-x-auto whitespace-pre"
               placeholder="// Write your code incantation here..."
             />
           </div>
 
           {/* Submit Action Bar */}
-          <div className="p-4 border-t border-white/10 bg-black/30">
+          <div className="p-3 sm:p-4 border-t border-white/10 bg-black/30">
             <button
               onClick={handleCompile}
               disabled={diagnosticsStatus === 'compiling'}
-              className="w-full py-3 bg-[#D2E823] border-2 border-[#D2E823] rounded-lg text-xs font-display text-[#09090B] transition-all btn-press shadow-brutal-glass-sm cursor-pointer flex items-center justify-center gap-2 select-none font-bold"
+              className="w-full py-3 bg-[#D2E823] border-2 border-[#D2E823] rounded-lg text-xs sm:text-sm font-display text-[#09090B] transition-all btn-press shadow-brutal-glass-sm cursor-pointer flex items-center justify-center gap-2 select-none font-bold min-h-[48px]"
             >
               {diagnosticsStatus === 'compiling' ? (
                 <>
@@ -308,7 +308,7 @@ export default function DynamicChallengePage() {
         </main>
 
         {/* Right Column: Diagnostics & Next Navigation */}
-        <section className="lg:col-span-3 glass-outer rounded-2xl p-5 flex flex-col justify-between shadow-brutal-glass text-[#09090B]">
+        <section className="lg:col-span-3 glass-outer rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-brutal-glass text-[#09090B] min-h-[220px] lg:min-h-0">
           <div className="space-y-4">
             <div className="flex items-center gap-2 border-b-2 border-[#09090B]/10 pb-3 select-none">
               <Sparkles className="w-4 h-4 text-[#09090B]" />
@@ -335,7 +335,7 @@ export default function DynamicChallengePage() {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-4 bg-emerald-50 border-2 border-emerald-600 rounded-xl space-y-3 select-none"
+                className="p-3.5 sm:p-4 bg-emerald-50 border-2 border-emerald-600 rounded-xl space-y-3 select-none"
               >
                 <div className="flex items-center gap-2 text-emerald-800 font-display text-xs uppercase">
                   <Trophy className="w-4 h-4 text-emerald-600" /> MISSION CLEARED! +100 XP
@@ -345,7 +345,7 @@ export default function DynamicChallengePage() {
                     audioEngine.playClickSound();
                     router.push(`/challenge/${nextChallenge.id}`);
                   }}
-                  className="w-full py-2 bg-emerald-600 border border-emerald-800 text-white rounded text-xs font-display font-bold btn-press cursor-pointer uppercase flex items-center justify-center gap-1"
+                  className="w-full py-2.5 bg-emerald-600 border border-emerald-800 text-white rounded text-xs font-display font-bold btn-press cursor-pointer uppercase flex items-center justify-center gap-1 min-h-[44px]"
                 >
                   CONTINUE TO NEXT LEVEL <ChevronRight className="w-4 h-4" />
                 </button>

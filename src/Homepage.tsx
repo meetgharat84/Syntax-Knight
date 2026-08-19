@@ -37,7 +37,8 @@ import {
   Terminal,
   Database,
   Layers,
-  Flame
+  Flame,
+  Menu
 } from 'lucide-react';
 import { audioEngine } from './audioEngine';
 import { ThreeDTilt } from './components/ThreeDTilt';
@@ -1310,6 +1311,7 @@ export default function Homepage() {
 
   // Settings Dashboard States
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(audioEngine.getMuted());
   const [parentalAge, setParentalAge] = useState<number>(20);
   const [authMousePos, setAuthMousePos] = useState({ x: 0, y: 0 });
@@ -2335,103 +2337,201 @@ export default function Homepage() {
 
       {/* ─── HUD NAV HEADER STRIP (90% Opacity Frosted Glass) ─── */}
       {currentScreen === 'home' ? (
-        <header className="sticky top-0 glass-outer border-b border-black/10 z-40 px-6 py-4 flex items-center justify-between select-none">
+        <header className="sticky top-0 glass-outer border-b border-black/10 z-40 px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between select-none">
           <div
             onClick={() => {
               audioEngine.playClickSound();
               setCurrentScreen('home');
             }}
-            className="flex items-center gap-2.5 cursor-pointer group"
+            className="flex items-center gap-2 cursor-pointer group"
           >
-            <Code className="w-5 h-5 text-[#D2E823] group-hover:scale-110 transition-transform" />
-            <span className="font-display text-base tracking-tighter text-[#F8F4E8] glitch-text uppercase font-black">
+            <Code className="w-4 sm:w-5 h-4 sm:h-5 text-[#D2E823] group-hover:scale-110 transition-transform" />
+            <span className="font-display text-sm sm:text-base tracking-tighter text-[#F8F4E8] glitch-text uppercase font-black">
               SyntaxKnight
             </span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={() => {
                 audioEngine.playClickSound();
                 setCurrentScreen('auth');
               }}
-              className="flex items-center gap-1.5 text-[10px] font-code font-bold bg-[#D2E823] text-black px-4 py-2 border-2 border-[#09090B] shadow-brutal-glass-sm btn-press cursor-pointer uppercase"
+              className="flex items-center gap-1.5 text-[10px] font-code font-bold bg-[#D2E823] text-black px-3 sm:px-4 py-2 border-2 border-[#09090B] shadow-brutal-glass-sm btn-press cursor-pointer uppercase min-h-[40px]"
             >
               ENTER CORE MATRIX (1)
             </button>
           </div>
         </header>
       ) : (
-        <header className="sticky top-0 glass-outer border-b border-black/10 z-40 px-6 py-4 flex items-center justify-between select-none">
-          <div
-            onClick={() => {
-              if (playerName) {
-                audioEngine.playClickSound();
-                setCurrentScreen('dashboard');
-              } else {
-                audioEngine.playClickSound();
-                setCurrentScreen('home');
-              }
-            }}
-            className="flex items-center gap-2.5 cursor-pointer group"
-          >
-            <Code className="w-5 h-5 text-[#D2E823] group-hover:scale-110 transition-transform" />
-            <span className="font-display text-base tracking-tighter text-[#F8F4E8] glitch-text">
-              SyntaxKnight
-            </span>
-            <span className="sticker-badge scale-75 select-none font-bold bg-[#D2E823]/80 backdrop-blur-sm">ACID_v1.0</span>
-          </div>
-
-          {playerName && (
-            <div className="flex items-center gap-3">
-              <div className="hidden md:flex items-center gap-2 text-[11px] font-code glass-inner px-3 py-1 rounded-lg shadow-brutal-glass-sm text-[#F8F4E8]">
-                <span className="font-bold text-[#F8F4E8]/60">STUDENT:</span>
-                <span className="font-bold text-black bg-[#D2E823]/80 backdrop-blur-sm px-1.5 py-0.5 rounded border border-[#09090B]/10">{playerName}</span>
-                <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border-2 uppercase tracking-wide ${getPlayerRank(completedMissions.length).color}`}>{getPlayerRank(completedMissions.length).title}</span>
-              </div>
+        <header className="sticky top-0 glass-outer border-b border-black/10 z-40 px-3 sm:px-6 py-2.5 sm:py-3.5 flex flex-col select-none">
+          <div className="flex items-center justify-between w-full">
+            <div
+              onClick={() => {
+                if (playerName) {
+                  audioEngine.playClickSound();
+                  setCurrentScreen('dashboard');
+                } else {
+                  audioEngine.playClickSound();
+                  setCurrentScreen('home');
+                }
+              }}
+              className="flex items-center gap-2 cursor-pointer group"
+            >
+              <Code className="w-4 sm:w-5 h-4 sm:h-5 text-[#D2E823] group-hover:scale-110 transition-transform" />
+              <span className="font-display text-sm sm:text-base tracking-tighter text-[#F8F4E8] glitch-text">
+                SyntaxKnight
+              </span>
+              <span className="sticker-badge scale-75 select-none font-bold bg-[#D2E823]/80 backdrop-blur-sm hidden sm:inline-block">ACID_v1.0</span>
             </div>
-          )}
-
-          <div className="flex items-center gap-3">
-            {currentScreen !== 'auth' && currentScreen !== 'dashboard' && (
-              <button
-                onClick={() => {
-                  audioEngine.playClickSound();
-                  setCurrentScreen(playerName ? 'dashboard' : 'home');
-                }}
-                className="flex items-center gap-1.5 text-[10px] font-code font-bold px-3 py-1.5 glass-inner rounded-lg btn-press shadow-brutal-glass-sm cursor-pointer text-[#F8F4E8]"
-              >
-                <ArrowLeft className="w-3.5 h-3.5 text-[#D2E823]" />
-                BACK TO HQ
-              </button>
-            )}
-
-            {/* Settings Dashboard toggle */}
-            {playerName && (
-              <button
-                onClick={() => {
-                  audioEngine.playClickSound();
-                  setIsSettingsOpen(true);
-                }}
-                className="p-2 glass-inner rounded-lg btn-press shadow-brutal-glass-sm cursor-pointer text-[#F8F4E8]"
-                title="Settings Config"
-              >
-                <Settings className="w-4 h-4 text-[#D2E823]" />
-              </button>
-            )}
 
             {playerName && (
+              <div className="hidden lg:flex items-center gap-3">
+                <div className="flex items-center gap-2 text-[11px] font-code glass-inner px-3 py-1 rounded-lg shadow-brutal-glass-sm text-[#F8F4E8]">
+                  <span className="font-bold text-[#F8F4E8]/60">STUDENT:</span>
+                  <span className="font-bold text-black bg-[#D2E823]/80 backdrop-blur-sm px-1.5 py-0.5 rounded border border-[#09090B]/10">{playerName}</span>
+                  <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border-2 uppercase tracking-wide ${getPlayerRank(completedMissions.length).color}`}>{getPlayerRank(completedMissions.length).title}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Desktop Action Buttons */}
+            <div className="hidden md:flex items-center gap-2 sm:gap-3">
+              {currentScreen !== 'auth' && currentScreen !== 'dashboard' && (
+                <button
+                  onClick={() => {
+                    audioEngine.playClickSound();
+                    setCurrentScreen(playerName ? 'dashboard' : 'home');
+                  }}
+                  className="flex items-center gap-1.5 text-[10px] font-code font-bold px-3 py-2 glass-inner rounded-lg btn-press shadow-brutal-glass-sm cursor-pointer text-[#F8F4E8] min-h-[40px]"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5 text-[#D2E823]" />
+                  BACK TO HQ
+                </button>
+              )}
+
+              {/* Settings Dashboard toggle */}
+              {playerName && (
+                <button
+                  onClick={() => {
+                    audioEngine.playClickSound();
+                    setIsSettingsOpen(true);
+                  }}
+                  className="p-2.5 glass-inner rounded-lg btn-press shadow-brutal-glass-sm cursor-pointer text-[#F8F4E8] min-h-[40px] min-w-[40px] flex items-center justify-center"
+                  title="Settings Config"
+                >
+                  <Settings className="w-4 h-4 text-[#D2E823]" />
+                </button>
+              )}
+
+              {playerName && (
+                <button
+                  onClick={() => {
+                    audioEngine.playClickSound();
+                    setCurrentScreen('advancements');
+                  }}
+                  className="flex items-center gap-1.5 text-[10px] font-code font-bold bg-amber-400 border-2 border-[#09090B] px-3 py-2 rounded-lg btn-press shadow-brutal-glass-sm cursor-pointer text-[#09090B] min-h-[40px]"
+                >
+                  🏆 ADVANCEMENTS
+                </button>
+              )}
+            </div>
+
+            {/* Mobile Hamburger Button */}
+            <div className="flex md:hidden items-center gap-2">
+              {currentScreen !== 'auth' && currentScreen !== 'dashboard' && (
+                <button
+                  onClick={() => {
+                    audioEngine.playClickSound();
+                    setCurrentScreen(playerName ? 'dashboard' : 'home');
+                  }}
+                  className="p-2 glass-inner rounded-lg text-xs font-code text-[#F8F4E8] min-h-[38px] flex items-center gap-1"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5 text-[#D2E823]" /> HQ
+                </button>
+              )}
               <button
                 onClick={() => {
                   audioEngine.playClickSound();
-                  setCurrentScreen('advancements');
+                  setIsMobileMenuOpen(prev => !prev);
                 }}
-                className="flex items-center gap-1.5 text-[10px] font-code font-bold bg-amber-400 border-2 border-[#09090B] px-3 py-1.5 rounded-lg btn-press shadow-brutal-glass-sm cursor-pointer text-[#09090B]"
+                className="p-2 glass-inner rounded-lg border border-white/20 text-[#D2E823] min-h-[40px] min-w-[40px] flex items-center justify-center cursor-pointer"
+                aria-label="Toggle navigation menu"
               >
-                🏆 ADVANCEMENTS
+                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
-            )}
-
+            </div>
           </div>
+
+          {/* Mobile Drawer Menu */}
+          <AnimatePresence>
+            {isMobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="md:hidden border-t border-white/10 mt-3 pt-3 flex flex-col gap-2 overflow-hidden"
+              >
+                {playerName && (
+                  <div className="flex items-center justify-between p-2.5 glass-inner rounded-lg text-xs text-[#F8F4E8]">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[#F8F4E8]/60 text-[10px]">KNIGHT:</span>
+                      <span className="font-bold text-black bg-[#D2E823] px-1.5 py-0.5 rounded text-[10px]">{playerName}</span>
+                    </div>
+                    <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border-2 uppercase tracking-wide ${getPlayerRank(completedMissions.length).color}`}>
+                      {getPlayerRank(completedMissions.length).title}
+                    </span>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => {
+                      audioEngine.playClickSound();
+                      setIsMobileMenuOpen(false);
+                      setCurrentScreen(playerName ? 'dashboard' : 'home');
+                    }}
+                    className="p-2.5 glass-inner rounded-lg text-[11px] font-code font-bold text-left text-[#F8F4E8] flex items-center gap-2 min-h-[44px]"
+                  >
+                    🏠 Dashboard HQ
+                  </button>
+                  {playerName && (
+                    <button
+                      onClick={() => {
+                        audioEngine.playClickSound();
+                        setIsMobileMenuOpen(false);
+                        setCurrentScreen('advancements');
+                      }}
+                      className="p-2.5 bg-amber-400 border border-[#09090B] rounded-lg text-[11px] font-code font-bold text-left text-[#09090B] flex items-center gap-2 min-h-[44px]"
+                    >
+                      🏆 Advancements
+                    </button>
+                  )}
+                  {playerName && (
+                    <button
+                      onClick={() => {
+                        audioEngine.playClickSound();
+                        setIsMobileMenuOpen(false);
+                        setIsSettingsOpen(true);
+                      }}
+                      className="p-2.5 glass-inner rounded-lg text-[11px] font-code font-bold text-left text-[#F8F4E8] flex items-center gap-2 min-h-[44px]"
+                    >
+                      ⚙️ System Config
+                    </button>
+                  )}
+                  <button
+                    onClick={() => {
+                      audioEngine.playClickSound();
+                      setIsMobileMenuOpen(false);
+                      setIsMentorOpen(true);
+                    }}
+                    className="p-2.5 bg-[#D2E823] border border-[#09090B] rounded-lg text-[11px] font-code font-bold text-left text-black flex items-center gap-2 min-h-[44px]"
+                  >
+                    🤖 AI Mentor
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </header>
       )}
 
@@ -4379,7 +4479,7 @@ export default function Homepage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="glass-outer rounded-xl p-6 max-w-md w-[95%] text-left relative overflow-hidden shadow-brutal-glass-xl border-2 border-red-500 bg-[#F8F4E8]"
+              className="glass-outer rounded-xl p-4 sm:p-6 w-[92vw] max-w-md max-h-[85vh] overflow-y-auto text-left relative shadow-brutal-glass-xl border-2 border-red-500 bg-[#F8F4E8]"
             >
               {/* Corner Close button */}
               <button
@@ -4387,7 +4487,7 @@ export default function Homepage() {
                   audioEngine.playClickSound();
                   setShowErrorModal(false);
                 }}
-                className="absolute top-4 right-4 p-1.5 border-2 border-[#09090B] rounded-md glass-inner btn-press-sm cursor-pointer hover:bg-red-500 hover:text-white transition-all text-black"
+                className="absolute top-3 sm:top-4 right-3 sm:right-4 p-1.5 border-2 border-[#09090B] rounded-md glass-inner btn-press-sm cursor-pointer hover:bg-red-500 hover:text-white transition-all text-black min-h-[36px] min-w-[36px] flex items-center justify-center"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -4417,7 +4517,7 @@ export default function Homepage() {
                 <span className="text-[9px] font-code font-bold text-[#09090B]/60 uppercase tracking-wider block">
                   🛡️ MISTAKE ANALYSIS & DIAGNOSIS:
                 </span>
-                <div className="p-4 bg-white border-2 border-[#09090B] rounded-xl shadow-brutal-glass-sm text-xs font-semibold leading-relaxed text-[#09090B] font-body bg-dot-pattern">
+                <div className="p-3 sm:p-4 bg-white border-2 border-[#09090B] rounded-xl shadow-brutal-glass-sm text-xs font-semibold leading-relaxed text-[#09090B] font-body bg-dot-pattern">
                   {errorModalDiagnosis}
                 </div>
               </div>
@@ -4435,13 +4535,13 @@ export default function Homepage() {
                 </div>
               </div>
 
-              <div className="mt-6 flex gap-3">
+              <div className="mt-6 flex flex-col sm:flex-row gap-2.5 sm:gap-3">
                 <button
                   onClick={() => {
                     audioEngine.playClickSound();
                     setShowErrorModal(false);
                   }}
-                  className="flex-1 py-3 bg-[#D2E823] border-2 border-[#09090B] rounded-lg text-xs font-display text-[#09090B] transition-all btn-press shadow-brutal-glass-sm cursor-pointer font-bold uppercase text-center"
+                  className="flex-1 py-3 bg-[#D2E823] border-2 border-[#09090B] rounded-lg text-xs font-display text-[#09090B] transition-all btn-press shadow-brutal-glass-sm cursor-pointer font-bold uppercase text-center min-h-[44px]"
                 >
                   [ RETRY INCANTATION ]
                 </button>
@@ -4466,7 +4566,7 @@ export default function Homepage() {
                     // Automatically trigger the OpenRouter generation pipeline
                     await handleMentorChatSubmitDirectly(promptText);
                   }}
-                  className="py-3 px-4 bg-white border-2 border-[#09090B] rounded-lg text-xs font-display text-[#09090B] transition-all btn-press shadow-brutal-glass-sm cursor-pointer font-bold uppercase text-center flex items-center justify-center gap-1.5 hover:bg-white/10 hover:text-black"
+                  className="py-3 px-4 bg-white border-2 border-[#09090B] rounded-lg text-xs font-display text-[#09090B] transition-all btn-press shadow-brutal-glass-sm cursor-pointer font-bold uppercase text-center flex items-center justify-center gap-1.5 hover:bg-white/10 hover:text-black min-h-[44px]"
                 >
                   <Bot className="w-4 h-4 text-black" /> ASK AI
                 </button>
@@ -4484,7 +4584,7 @@ export default function Homepage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="glass-outer rounded-xl p-6 max-w-md w-[90%] space-y-6 relative overflow-hidden shadow-brutal-glass text-[#09090B]"
+              className="glass-outer rounded-xl p-4 sm:p-6 w-[92vw] max-w-md max-h-[85vh] overflow-y-auto space-y-5 relative shadow-brutal-glass text-[#09090B]"
             >
               {/* Header Title */}
               <div className="flex items-center justify-between border-b-2 border-[#09090B]/10 pb-3">
@@ -4683,10 +4783,10 @@ export default function Homepage() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 22, stiffness: 120 }}
-            className="fixed top-0 right-0 h-full w-[360px] md:w-96 glass-outer border-l border-black/10 z-50 flex flex-col justify-between shadow-[-8px_0px_0px_0px_#09090B,0_12px_40px_0_rgba(31,38,135,0.15)]"
+            className="fixed top-0 right-0 h-full w-full sm:w-[380px] md:w-96 max-w-full glass-outer border-l border-black/10 z-50 flex flex-col justify-between shadow-[-8px_0px_0px_0px_#09090B,0_12px_40px_0_rgba(31,38,135,0.15)]"
           >
             {/* Header info */}
-            <div className="p-4 border-b-2 border-[#09090B]/15 flex flex-col gap-3 select-none text-[#09090B]">
+            <div className="p-3.5 sm:p-4 border-b-2 border-[#09090B]/15 flex flex-col gap-3 select-none text-[#09090B]">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Bot className="w-5 h-5 text-[#D2E823]" />
@@ -4697,7 +4797,7 @@ export default function Homepage() {
                     audioEngine.playClickSound();
                     setIsMentorOpen(false);
                   }}
-                  className="p-1 rounded-lg border-2 border-[#09090B] glass-inner btn-press-sm cursor-pointer hover:bg-[#D2E823]"
+                  className="p-1.5 rounded-lg border-2 border-[#09090B] glass-inner btn-press-sm cursor-pointer hover:bg-[#D2E823] min-h-[36px] min-w-[36px] flex items-center justify-center"
                 >
                   <X className="w-4 h-4 text-[#09090B]" />
                 </button>
@@ -4724,7 +4824,7 @@ export default function Homepage() {
             </div>
 
             {/* Chat timeline logs */}
-            <div className="flex-grow p-4 overflow-y-auto space-y-4 text-xs select-text">
+            <div className="flex-grow p-3 sm:p-4 overflow-y-auto space-y-3.5 sm:space-y-4 text-xs select-text">
               {mentorMessages.map((msg, index) => {
                 const isAi = msg.sender === 'ai';
                 return (
@@ -4733,10 +4833,10 @@ export default function Homepage() {
                       }`}>
                       {isAi ? <Bot className="w-4 h-4 text-black" /> : <User className="w-4 h-4" />}
                     </div>
-                    <div className="space-y-1 max-w-[75%]">
-                      <div className={`p-3 rounded-lg border-2 border-[#09090B] leading-relaxed font-body ${isAi ? 'glass-inner text-[#09090B]' : 'bg-[#D2E823]/25 backdrop-blur-sm text-[#09090B]'
+                    <div className="space-y-1 max-w-[80%] sm:max-w-[75%]">
+                      <div className={`p-2.5 sm:p-3 rounded-lg border-2 border-[#09090B] leading-relaxed font-body ${isAi ? 'glass-inner text-[#09090B]' : 'bg-[#D2E823]/25 backdrop-blur-sm text-[#09090B]'
                         }`}>
-                        <p className="whitespace-pre-wrap font-semibold font-body">{msg.text}</p>
+                        <p className="whitespace-pre-wrap font-semibold font-body text-xs leading-relaxed">{msg.text}</p>
                       </div>
                       <span className="text-[9px] font-code text-[#09090B]/50 block text-right">{msg.timestamp}</span>
                     </div>
@@ -4749,7 +4849,7 @@ export default function Homepage() {
                   <div className="w-8 h-8 rounded-lg border-2 border-[#09090B] bg-[#D2E823]/80 backdrop-blur-sm flex items-center justify-center shrink-0">
                     <Cpu className="w-4 h-4 animate-spin text-[#09090B]" />
                   </div>
-                  <div className="p-3 glass-inner rounded-lg font-body font-bold text-[#09090B]/60 animate-pulse">
+                  <div className="p-3 glass-inner rounded-lg font-body font-bold text-[#09090B]/60 animate-pulse text-xs">
                     Routing query to the compiler oracle...
                   </div>
                 </div>
@@ -4758,7 +4858,7 @@ export default function Homepage() {
             </div>
 
             {/* Input Submission */}
-            <form onSubmit={handleMentorChatSubmit} className="p-4 border-t-2 border-[#09090B]/15 glass-inner flex gap-2 items-center">
+            <form onSubmit={handleMentorChatSubmit} className="p-3 sm:p-4 border-t-2 border-[#09090B]/15 glass-inner flex gap-2 items-center">
               <input
                 type="text"
                 required
@@ -4766,12 +4866,12 @@ export default function Homepage() {
                 onChange={e => setMentorInput(e.target.value)}
                 disabled={isMentorTyping}
                 placeholder="Ask technical question..."
-                className="flex-grow glass-inner rounded-lg px-3 py-2.5 text-xs font-code focus:outline-none focus:border-[#D2E823] text-[#09090B] shadow-brutal-glass-sm"
+                className="flex-grow glass-inner rounded-lg px-3 py-2.5 text-xs font-code focus:outline-none focus:border-[#D2E823] text-[#09090B] shadow-brutal-glass-sm min-h-[44px]"
               />
               <button
                 type="submit"
                 disabled={isMentorTyping || !mentorInput.trim()}
-                className="p-3 bg-[#D2E823] border-2 border-[#09090B] rounded-lg btn-press cursor-pointer hover:bg-[#D2E823]"
+                className="p-3 bg-[#D2E823] border-2 border-[#09090B] rounded-lg btn-press cursor-pointer hover:bg-[#D2E823] min-h-[44px] min-w-[44px] flex items-center justify-center"
               >
                 <Send className="w-4 h-4 text-[#09090B]" />
               </button>
@@ -4788,15 +4888,15 @@ export default function Homepage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className={`glass-outer rounded-xl p-8 max-w-sm w-[90%] text-center relative overflow-hidden shadow-brutal-glass-xl border-2 ${infoModal.type === 'error' ? 'border-red-500 bg-[#F8F4E8]' : 'border-[#09090B] bg-[#F8F4E8]'
+              className={`glass-outer rounded-xl p-5 sm:p-8 w-[92vw] max-w-sm text-center relative overflow-hidden shadow-brutal-glass-xl border-2 ${infoModal.type === 'error' ? 'border-red-500 bg-[#F8F4E8]' : 'border-[#09090B] bg-[#F8F4E8]'
                 }`}
             >
-              <div className={`w-16 h-16 rounded-xl mx-auto flex items-center justify-center mb-4 border-2 border-[#09090B] shadow-brutal-glass-sm ${infoModal.type === 'success' ? 'bg-[#D2E823]' : infoModal.type === 'error' ? 'bg-red-100' : 'bg-blue-100'
+              <div className={`w-14 sm:w-16 h-14 sm:h-16 rounded-xl mx-auto flex items-center justify-center mb-4 border-2 border-[#09090B] shadow-brutal-glass-sm ${infoModal.type === 'success' ? 'bg-[#D2E823]' : infoModal.type === 'error' ? 'bg-red-100' : 'bg-blue-100'
                 }`}>
-                {infoModal.type === 'success' ? <Trophy className="w-8 h-8 text-[#09090B]" /> : <AlertTriangle className="w-8 h-8 text-[#09090B]" />}
+                {infoModal.type === 'success' ? <Trophy className="w-7 sm:w-8 h-7 sm:h-8 text-[#09090B]" /> : <AlertTriangle className="w-7 sm:w-8 h-7 sm:h-8 text-[#09090B]" />}
               </div>
 
-              <h2 className="font-display text-2xl tracking-tighter text-[#09090B] uppercase">
+              <h2 className="font-display text-xl sm:text-2xl tracking-tighter text-[#09090B] uppercase">
                 {infoModal.title}
               </h2>
               <p className="text-xs text-[#09090B]/60 font-body leading-relaxed mt-2.5">
@@ -4809,7 +4909,7 @@ export default function Homepage() {
                     audioEngine.playClickSound();
                     setInfoModal(null);
                   }}
-                  className="w-full py-2.5 bg-[#D2E823] border-2 border-[#09090B] rounded-lg text-xs font-display text-[#09090B] hover:bg-[#c5db1a] transition-all btn-press shadow-brutal-glass-sm cursor-pointer font-bold uppercase"
+                  className="w-full py-3 bg-[#D2E823] border-2 border-[#09090B] rounded-lg text-xs font-display text-[#09090B] hover:bg-[#c5db1a] transition-all btn-press shadow-brutal-glass-sm cursor-pointer font-bold uppercase min-h-[44px]"
                 >
                   DISMISS
                 </button>

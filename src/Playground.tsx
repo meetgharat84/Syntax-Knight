@@ -345,21 +345,20 @@ function Playground() {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 100, damping: 15 }}
-      className="bg-transparent p-4 relative noise-overlay"
-      style={{ minHeight: '100dvh', height: '100dvh' }}
+      className="bg-transparent p-3 sm:p-4 relative noise-overlay min-h-[100dvh] lg:h-[100dvh] overflow-y-auto lg:overflow-hidden flex flex-col"
     >
       {/* ─── Top Navigation Bar ─── */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           <button
             onClick={() => {
               audioEngine.playClickSound();
               navigate('/');
             }}
-            className="flex items-center gap-2 text-[10px] font-code text-[#09090B]/60 hover:text-[#DC2626] transition-colors group cursor-pointer glass-inner hover:border-[#DC2626] px-3 py-1.5 rounded-lg btn-press-sm shadow-brutal-glass-sm text-[#09090B]"
+            className="flex items-center gap-2 text-[10px] sm:text-xs font-code text-[#09090B]/60 hover:text-[#DC2626] transition-colors group cursor-pointer glass-inner hover:border-[#DC2626] px-3 py-2 sm:py-2.5 rounded-lg btn-press-sm shadow-brutal-glass-sm text-[#09090B] min-h-[44px]"
           >
             <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-            <span className="tracking-widest">← ABANDON QUEST</span>
+            <span className="tracking-widest">← ABANDON</span>
           </button>
 
           <button
@@ -367,24 +366,24 @@ function Playground() {
               audioEngine.playClickSound();
               setIsAiMentorOpen(v => !v);
             }}
-            className="flex items-center gap-1.5 text-[10px] font-code font-bold bg-[#D2E823]/80 backdrop-blur-sm border-2 border-[#09090B] px-3 py-1.5 rounded-lg btn-press-sm shadow-brutal-glass-sm cursor-pointer text-[#09090B]"
+            className="flex items-center gap-1.5 text-[10px] sm:text-xs font-code font-bold bg-[#D2E823]/90 backdrop-blur-sm border-2 border-[#09090B] px-3 py-2 sm:py-2.5 rounded-lg btn-press-sm shadow-brutal-glass-sm cursor-pointer text-[#09090B] min-h-[44px]"
           >
             <Bot className="w-3.5 h-3.5 text-[#09090B]" />
-            <span>ASK MENTOR 🤖</span>
+            <span>AI MENTOR 🤖</span>
           </button>
         </div>
 
         {/* Center: Arena Label */}
         <div className="hidden md:flex items-center gap-3">
           <Swords className="w-4 h-4 text-[#D2E823]" />
-          <span className="font-display text-[11px] tracking-tight text-[#F8F4E8] uppercase">
+          <span className="font-display text-[11px] tracking-tight text-[#09090B] uppercase font-bold">
             The Battle Arena
           </span>
           <Swords className="w-4 h-4 text-[#D2E823]" />
         </div>
 
         {/* Right: Player HUD */}
-        <div className="hidden lg:flex items-center glass-inner px-4 py-1.5 rounded-lg gap-4 text-[10px] select-none shadow-brutal-glass-sm text-[#09090B]">
+        <div className="flex items-center glass-inner px-3 sm:px-4 py-1.5 rounded-lg gap-3 sm:gap-4 text-[10px] select-none shadow-brutal-glass-sm text-[#09090B] min-h-[44px]">
           <div className="flex items-center gap-1.5">
             <span className="text-[#09090B]/50 tracking-wider font-code">KNIGHT:</span>
             <span className="font-bold text-[#09090B] font-code uppercase">
@@ -396,9 +395,9 @@ function Playground() {
             <span className="text-[#09090B]/50 tracking-wider font-code">RANK:</span>
             <span className="font-bold text-[#09090B] font-code">LVL {playerLevel}</span>
           </div>
-          <div className="h-3 w-px bg-[#09090B]/20" />
-          <div className="flex items-center gap-2">
-            <div className="w-20 h-2 bg-[#E8E4D8] rounded-sm overflow-hidden border-2 border-[#09090B]">
+          <div className="hidden sm:flex items-center gap-2">
+            <div className="h-3 w-px bg-[#09090B]/20" />
+            <div className="w-16 sm:w-20 h-2 bg-[#E8E4D8] rounded-sm overflow-hidden border-2 border-[#09090B]">
               <div
                 className="h-full bg-[#D2E823] transition-all duration-500"
                 style={{
@@ -414,18 +413,18 @@ function Playground() {
       </div>
 
       {/* ─── THREE-PANEL GRID ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4" style={{ height: 'calc(100dvh - 5rem)' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-grow lg:h-[calc(100dvh-5.5rem)]">
         {/* ══════════════════════════════════════
            LEFT COLUMN — THE QUEST CODEX (span 4)
            ══════════════════════════════════════ */}
-         <aside className="lg:col-span-4 glass-outer rounded-xl p-5 overflow-y-auto flex flex-col shadow-brutal-glass text-[#09090B]">
+        <aside className="lg:col-span-4 glass-outer rounded-xl p-4 sm:p-5 overflow-y-auto flex flex-col shadow-brutal-glass text-[#09090B]">
           {/* Mission Header */}
           <div className="mb-4">
             <div className="flex items-center gap-2 text-[10px] font-code text-[#09090B]/60 tracking-[0.2em] uppercase">
               <Swords className="w-3.5 h-3.5 text-[#09090B]" />
               {level.missionLabel}
             </div>
-            <h1 className="font-display text-xl mt-1.5 tracking-tight text-[#09090B]">
+            <h1 className="font-display text-lg sm:text-xl mt-1.5 tracking-tight text-[#09090B]">
               {level.title.toUpperCase()}
             </h1>
             <p className="text-[10px] text-[#09090B]/50 mt-0.5 font-code">{level.world}</p>
@@ -451,7 +450,7 @@ function Playground() {
           </div>
 
           {/* ── Quest Objectives (Highlighted Alert Panel) ── */}
-          <div className="mb-5 bg-[#D2E823] border-4 border-[#09090B] rounded-xl p-5 shadow-brutal brutal-shadow">
+          <div className="mb-5 bg-[#D2E823] border-4 border-[#09090B] rounded-xl p-4 sm:p-5 shadow-brutal brutal-shadow">
             <div className="flex items-center gap-2 mb-3">
               <Zap className="w-4 h-4 text-[#09090B] fill-current" />
               <span className="text-[11px] font-code font-black tracking-widest text-[#09090B] uppercase">
@@ -478,7 +477,7 @@ function Playground() {
                     {obj.done && <CheckCircle2 className="w-3.5 h-3.5 text-[#D2E823]" />}
                   </div>
                   <p
-                    className={`text-[13px] font-body font-bold leading-relaxed transition-colors ${
+                    className={`text-xs sm:text-[13px] font-body font-bold leading-relaxed transition-colors ${
                       obj.done ? 'text-black/55 line-through font-semibold' : 'text-[#09090B]'
                     }`}
                   >
@@ -490,7 +489,7 @@ function Playground() {
           </div>
 
           {/* ── 3-LAYER TABS — Folder Cutout Style ── */}
-          <div className="flex gap-0 mb-0">
+          <div className="flex gap-0 mb-0 flex-wrap">
             {TAB_CONFIG.map((tab) => (
               <button
                 key={tab.key}
@@ -498,7 +497,7 @@ function Playground() {
                   audioEngine.playClickSound();
                   setActiveTab(tab.key);
                 }}
-                className={`folder-tab text-[11px] font-code font-bold tracking-wider py-2 px-3 cursor-pointer ${
+                className={`folder-tab text-[10px] sm:text-[11px] font-code font-bold tracking-wider py-2 px-3 cursor-pointer min-h-[38px] ${
                   activeTab === tab.key
                     ? 'folder-tab-active'
                     : 'folder-tab-inactive'
@@ -510,12 +509,12 @@ function Playground() {
           </div>
 
           {/* ── Tab Content (Rich Text) ── */}
-          <div className="flex-1 glass-inner border-t-0 rounded-b-lg p-4 overflow-y-auto mb-4 text-[#09090B] shadow-brutal-glass-sm">
+          <div className="flex-1 glass-inner border-t-0 rounded-b-lg p-4 overflow-y-auto mb-4 text-[#09090B] shadow-brutal-glass-sm min-h-[140px]">
             <h3 className="text-sm font-bold text-[#09090B] mb-3 flex items-center gap-2 font-display">
               <Sparkles className="w-3.5 h-3.5 text-[#09090B]" />
               {activeTabData.title}
             </h3>
-            <div className="space-y-1">{renderRichText(activeTabData.body)}</div>
+            <div className="space-y-1 text-xs sm:text-sm">{renderRichText(activeTabData.body)}</div>
           </div>
 
         </aside>
@@ -523,22 +522,22 @@ function Playground() {
         {/* ══════════════════════════════════════
            CENTER COLUMN — THE CODE TERMINAL (span 5)
            ══════════════════════════════════════ */}
-        <main className={`lg:col-span-5 glass-dark-code border-4 border-[#09090B] rounded-xl flex flex-col justify-between p-0 overflow-hidden shadow-brutal-glass-lg ${
+        <main className={`lg:col-span-5 glass-dark-code border-4 border-[#09090B] rounded-xl flex flex-col justify-between p-0 overflow-hidden shadow-brutal-glass-lg min-h-[340px] lg:min-h-0 ${
           validationStatus === 'error' ? 'code-error-flash' : validationStatus === 'success' ? 'code-success-flash' : ''
         }`}>
           {/* ── Top Bar ── */}
-          <div className="flex items-center justify-between px-5 py-3 border-b border-[#F8F4E8]/10 shrink-0">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between px-3 sm:px-5 py-3 border-b border-[#F8F4E8]/10 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* Traffic lights */}
               <div className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-sm bg-[#DC2626]" />
                 <div className="w-2.5 h-2.5 rounded-sm bg-[#D2E823]" />
                 <div className="w-2.5 h-2.5 rounded-sm bg-[#F8F4E8]" />
               </div>
-              <div className="flex items-center gap-1.5 bg-[#141418] border border-[#F8F4E8]/10 px-3 py-1 rounded-md">
+              <div className="flex items-center gap-1.5 bg-[#141418] border border-[#F8F4E8]/10 px-2.5 sm:px-3 py-1 rounded-md">
                 <Code2 className="w-3.5 h-3.5 text-[#D2E823]" />
-                <span className="text-[10px] font-code text-[#F8F4E8]/50 tracking-wider">
-                  TERMINAL_WORKSPACE_v2.1
+                <span className="text-[9px] sm:text-[10px] font-code text-[#F8F4E8]/50 tracking-wider">
+                  WORKSPACE.HTML
                 </span>
               </div>
             </div>
@@ -562,19 +561,19 @@ function Playground() {
                     }
                   }
                 }}
-                className={`flex items-center gap-1.5 text-[9px] font-code font-bold px-3 py-1.5 rounded-lg border-2 transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 text-[9px] font-code font-bold px-2.5 sm:px-3 py-1.5 rounded-lg border-2 transition-all cursor-pointer min-h-[36px] ${
                   hintVisible
                     ? 'bg-[#D2E823] border-[#D2E823] text-[#09090B]'
                     : 'border-[#F8F4E8]/10 text-[#F8F4E8]/50 hover:text-[#D2E823] hover:border-[#D2E823]/30'
                 }`}
               >
                 <Lightbulb className="w-3 h-3" />
-                LEVEL HINT
+                HINT
               </button>
               {/* Reset */}
               <button
                 onClick={handleReset}
-                className="flex items-center gap-1.5 text-[9px] font-code text-[#F8F4E8]/50 hover:text-[#F8F4E8] transition-colors px-2.5 py-1.5 rounded-lg cursor-pointer border border-transparent hover:border-[#F8F4E8]/10"
+                className="flex items-center gap-1 text-[9px] font-code text-[#F8F4E8]/50 hover:text-[#F8F4E8] transition-colors px-2 py-1.5 rounded-lg cursor-pointer border border-transparent hover:border-[#F8F4E8]/10 min-h-[36px]"
                 title="Reset code"
               >
                 <RotateCcw className="w-3 h-3" />
@@ -585,7 +584,7 @@ function Playground() {
 
           {/* ── Hint Banner (conditionally shown) ── */}
           {hintVisible && (
-            <div className="mx-4 mt-3 bg-[#141418] border-2 border-[#D2E823]/40 p-3 rounded-lg text-xs text-[#D2E823] space-y-1.5 animate-fade-up">
+            <div className="mx-3 sm:mx-4 mt-3 bg-[#141418] border-2 border-[#D2E823]/40 p-3 rounded-lg text-xs text-[#D2E823] space-y-1.5 animate-fade-up">
               <div className="font-bold text-[#D2E823] flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
                   <Lightbulb className="w-3 h-3" />
@@ -603,8 +602,8 @@ function Playground() {
             </div>
           )}
 
-          {/* ── IDE Input Area ── */}
-          <div className="flex-1 flex overflow-hidden min-h-0 mx-4 mt-3 mb-3">
+          {/* ── IDE Input Area with Horizontal Overflow Safety ── */}
+          <div className="flex-1 flex overflow-hidden min-h-[200px] lg:min-h-0 mx-3 sm:mx-4 mt-3 mb-3">
             <motion.div 
               animate={validationStatus === 'error' ? {
                 x: [-10, 10, -10, 10, 0],
@@ -622,19 +621,19 @@ function Playground() {
               {/* Line numbers gutter */}
               <div
                 ref={lineNumberRef}
-                className="w-10 bg-black/40 border-r border-white/10 py-3 overflow-hidden shrink-0 select-none"
+                className="w-9 sm:w-10 bg-black/40 border-r border-white/10 py-3 overflow-hidden shrink-0 select-none"
               >
                 {lines.map((n) => (
                   <div
                     key={n}
-                    className="px-2 text-right text-[13px] font-code text-[#F8F4E8]/25 leading-[1.7]"
+                    className="px-1.5 sm:px-2 text-right text-[12px] sm:text-[13px] font-code text-[#F8F4E8]/25 leading-[1.7]"
                   >
                     {n}
                   </div>
                 ))}
               </div>
 
-              {/* Textarea */}
+              {/* Textarea with overflow-x-auto */}
               <textarea
                 key={shakeKey}
                 ref={textareaRef}
@@ -648,7 +647,7 @@ function Playground() {
                 }}
                 onScroll={handleScroll}
                 spellCheck={false}
-                className="flex-1 font-code tracking-wide text-[#D2E823] bg-transparent p-4 w-full resize-none outline-none text-[15px] leading-[1.7] caret-[#D2E823] placeholder-[#F8F4E8]/15"
+                className="flex-1 font-mono tracking-wide text-[#D2E823] bg-transparent p-3 sm:p-4 w-full resize-none outline-none text-[13px] sm:text-[15px] leading-[1.7] caret-[#D2E823] placeholder-[#F8F4E8]/15 overflow-x-auto whitespace-pre"
                 style={{ minHeight: 0 }}
                 placeholder="// Begin writing your code here, Knight..."
               />
@@ -658,7 +657,7 @@ function Playground() {
           {/* ── Validation Message ── */}
           {validationMessage && (
             <div
-              className={`mx-4 mb-3 px-3 py-2 text-[10px] font-code flex items-center gap-2 rounded-lg border-2 ${
+              className={`mx-3 sm:mx-4 mb-3 px-3 py-2 text-[10px] sm:text-xs font-code flex items-center gap-2 rounded-lg border-2 ${
                 validationStatus === 'success'
                   ? 'bg-[#D2E823]/10 border-[#D2E823]/40 text-[#D2E823]'
                   : 'bg-[#DC2626]/10 border-[#DC2626]/40 text-[#DC2626]'
@@ -673,11 +672,11 @@ function Playground() {
             </div>
           )}
 
-          {/* ── Bottom Submit Bar ── */}
-          <div className="px-5 py-3 border-t border-[#F8F4E8]/5 shrink-0">
+          {/* ── Bottom Submit Bar (Touch-friendly) ── */}
+          <div className="px-3 sm:px-5 py-3 border-t border-[#F8F4E8]/5 shrink-0">
             <button
               onClick={handleSubmit}
-              className="w-full flex items-center justify-center gap-2 bg-[#D2E823] hover:bg-[#c5db1a] px-6 py-3 rounded-lg font-display text-xs tracking-wider text-[#09090B] border-2 border-[#D2E823] transition-all cursor-pointer btn-press shadow-brutal-glass-sm"
+              className="w-full flex items-center justify-center gap-2 bg-[#D2E823] hover:bg-[#c5db1a] px-4 sm:px-6 py-3 rounded-lg font-display text-xs sm:text-sm tracking-wider text-[#09090B] border-2 border-[#D2E823] transition-all cursor-pointer btn-press shadow-brutal-glass-sm min-h-[48px] font-bold"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
               SUBMIT CODE / ATTACK ➔
@@ -689,7 +688,7 @@ function Playground() {
            RIGHT COLUMN — LIVE PREVIEW (span 3)
            ══════════════════════════════════════ */}
         <section
-          className={`lg:col-span-3 glass-outer border-4 rounded-xl p-5 flex flex-col overflow-hidden transition-all duration-500 shadow-brutal-glass text-[#09090B] ${
+          className={`lg:col-span-3 glass-outer border-4 rounded-xl p-4 sm:p-5 flex flex-col overflow-hidden transition-all duration-500 shadow-brutal-glass text-[#09090B] min-h-[260px] lg:min-h-0 ${
             isSuccess
               ? 'border-[#D2E823]'
               : 'border-[#09090B]'

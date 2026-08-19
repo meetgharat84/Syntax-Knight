@@ -286,22 +286,22 @@ function ReactPlayground() {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 100, damping: 15 }}
-      className="h-screen bg-transparent flex flex-col overflow-hidden text-[#09090B] select-none noise-overlay"
+      className="min-h-screen lg:h-screen bg-transparent flex flex-col overflow-y-auto lg:overflow-hidden text-[#09090B] select-none noise-overlay"
     >
 
       {/* ═══════════════════════════════════════
          TOP HUD NAVIGATION BAR
          ═══════════════════════════════════════ */}
-      <header className="shrink-0 flex items-center justify-between px-4 py-2.5 glass-outer border-b-2 border-[#09090B]/10 z-30 text-[#09090B] shadow-brutal-glass-sm">
+      <header className="shrink-0 flex flex-wrap items-center justify-between gap-3 px-3 sm:px-4 py-2.5 glass-outer border-b-2 border-[#09090B]/10 z-30 text-[#09090B] shadow-brutal-glass-sm">
         <button
           onClick={() => {
             audioEngine.playClickSound();
             navigate('/');
           }}
-          className="flex items-center gap-2 text-[10px] font-code text-[#09090B]/60 hover:text-[#DC2626] transition-colors group cursor-pointer glass-inner hover:border-[#DC2626] px-3 py-1.5 rounded-lg btn-press-sm shadow-brutal-glass-sm text-[#09090B]"
+          className="flex items-center gap-2 text-[10px] sm:text-xs font-code text-[#09090B]/60 hover:text-[#DC2626] transition-colors group cursor-pointer glass-inner hover:border-[#DC2626] px-3 py-2 rounded-lg btn-press-sm shadow-brutal-glass-sm text-[#09090B] min-h-[44px]"
         >
           <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
-          <span className="tracking-widest font-bold">ABANDON PROJECT</span>
+          <span className="tracking-widest font-bold">ABANDON</span>
         </button>
 
         <div className="hidden md:flex items-center gap-3">
@@ -312,8 +312,8 @@ function ReactPlayground() {
           <Rocket className="w-4 h-4 text-[#09090B]" />
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="hidden lg:flex items-center gap-2 text-[10px] font-code">
+        <div className="flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-2 text-[10px] font-code">
             <div className={`w-2 h-2 rounded-sm border border-[#09090B] ${
               isCompiling ? 'bg-[#D2E823] animate-pulse' :
               compileStatus === 'success' ? 'bg-[#D2E823]' :
@@ -323,32 +323,29 @@ function ReactPlayground() {
               isCompiling ? 'text-[#09090B]/70' :
               compileStatus === 'success' ? 'text-[#09090B]' : 'text-[#09090B]'
             }`}>
-              {isCompiling ? 'COMPILING...' : compileStatus === 'success' ? 'BUILD SUCCESSFUL' : 'COMPILING LIVE PREVIEW...'}
+              {isCompiling ? 'COMPILING...' : compileStatus === 'success' ? 'BUILD OK' : 'READY'}
             </span>
           </div>
-          <div className="hidden lg:flex items-center glass-inner px-3 py-1 rounded-lg gap-3 text-[9px] font-code shadow-brutal-glass-sm text-[#09090B]">
+          <div className="flex items-center glass-inner px-2.5 sm:px-3 py-1 rounded-lg gap-2 text-[9px] font-code shadow-brutal-glass-sm text-[#09090B] min-h-[38px]">
             <span className="text-[#09090B]/50">KNIGHT:</span>
             <span className="font-bold text-[#09090B] uppercase">
               {playerName || 'RECRUIT'}
             </span>
             <div className="h-3 w-px bg-[#09090B]/20" />
-            <span className="text-[#09090B]/50">LVL</span>
-            <span className="font-bold text-[#09090B]">{playerLevel}</span>
-            <div className="h-3 w-px bg-[#09090B]/20" />
-            <span className="font-bold text-[#09090B] bg-[#D2E823] px-1.5 py-0.5 rounded border border-[#09090B]">{currentXP} XP</span>
+            <span className="font-bold text-[#09090B] bg-[#D2E823] px-1 py-0.5 rounded border border-[#09090B]">{currentXP} XP</span>
           </div>
         </div>
       </header>
 
       {/* ═══════════════════════════════════════
-         THREE-PANEL IDE SPLIT
+         THREE-PANEL IDE SPLIT (STACKED ON MOBILE)
          ═══════════════════════════════════════ */}
-      <div className="flex-1 flex overflow-hidden min-h-0">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0">
 
         {/* ────────────────────────────────────
-           PANEL 1: FILE EXPLORER + STEP TRACKER (15%)
+           PANEL 1: FILE EXPLORER + STEP TRACKER
            ──────────────────────────────────── */}
-        <aside className="w-[15%] min-w-[200px] glass-outer border-r border-black/10 flex flex-col overflow-hidden shrink-0 text-[#09090B] shadow-brutal-glass-lg">
+        <aside className="w-full lg:w-[18%] lg:min-w-[200px] max-h-[220px] lg:max-h-none glass-outer border-b-2 lg:border-b-0 lg:border-r border-black/10 flex flex-col overflow-y-auto shrink-0 text-[#09090B] shadow-brutal-glass-lg">
           {/* Explorer header */}
           <div className="px-3 py-2.5 border-b-2 border-[#09090B]/10 flex items-center gap-2 select-none">
             <Globe className="w-3.5 h-3.5 text-[#09090B]" />
@@ -666,26 +663,26 @@ function ReactPlayground() {
               onChange={(e) => updateFile(e.target.value)}
               onScroll={handleScroll}
               spellCheck={false}
-              className="flex-1 bg-transparent text-[15px] font-code text-[#D2E823] p-3 leading-[1.65] resize-none focus:outline-none overflow-auto min-h-0 placeholder-[#F8F4E8]/15 caret-[#D2E823]"
+              className="flex-1 bg-transparent text-[13px] sm:text-[15px] font-mono text-[#D2E823] p-3 leading-[1.65] resize-none focus:outline-none overflow-x-auto overflow-y-auto whitespace-pre min-h-[180px] lg:min-h-0 placeholder-[#F8F4E8]/15 caret-[#D2E823]"
               placeholder="// Start coding..."
             />
           </motion.div>
 
           {/* ── Error Panel ── */}
           {compileStatus === 'error' && compileError && (
-            <div className="shrink-0 bg-[#0e0608] border-t border-[#DC2626]/20 px-4 py-2.5 animate-fade-up">
-              <div className="flex items-center gap-2 text-[12px] font-code text-[#DC2626]">
+            <div className="shrink-0 bg-[#0e0608] border-t border-[#DC2626]/20 px-3 sm:px-4 py-2.5 animate-fade-up">
+              <div className="flex items-center gap-2 text-[11px] sm:text-[12px] font-code text-[#DC2626]">
                 <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                 <span className="font-bold tracking-wider">COMPILATION FAILED</span>
               </div>
-              <p className="text-[12px] font-code text-[#DC2626]/80 mt-1 leading-relaxed pl-5">
+              <p className="text-[11px] sm:text-[12px] font-code text-[#DC2626]/80 mt-1 leading-relaxed pl-5">
                 {compileError}
               </p>
             </div>
           )}
 
           {compileStatus === 'success' && (
-            <div className="shrink-0 bg-[#D2E823]/10 border-t border-[#D2E823]/20 px-4 py-2 flex items-center gap-2 text-[12px] font-code text-[#D2E823]">
+            <div className="shrink-0 bg-[#D2E823]/10 border-t border-[#D2E823]/20 px-3 sm:px-4 py-2 flex items-center gap-2 text-[11px] sm:text-[12px] font-code text-[#D2E823]">
               <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
               <span className="font-bold tracking-wider">
                 {stepSuccessFlash ? currentStep?.successMessage : 'BUILD PASSED — Step validated successfully.'}
@@ -693,12 +690,12 @@ function ReactPlayground() {
             </div>
           )}
 
-          {/* ── Compile Button ── */}
-          <div className="shrink-0 px-4 py-3 border-t border-[#F8F4E8]/5 bg-[#09090B]">
+          {/* ── Compile Button (Touch-friendly) ── */}
+          <div className="shrink-0 px-3 sm:px-4 py-3 border-t border-[#F8F4E8]/5 bg-[#09090B]">
             <button
               onClick={handleCompile}
               disabled={isCompiling}
-              className="w-full flex items-center justify-center gap-2.5 bg-[#D2E823] disabled:bg-gray-700 disabled:cursor-not-allowed px-6 py-3 rounded-lg font-display text-xs tracking-wider text-[#09090B] border-2 border-[#D2E823] transition-all cursor-pointer btn-press shadow-brutal-glass-sm"
+              className="w-full flex items-center justify-center gap-2.5 bg-[#D2E823] disabled:bg-gray-700 disabled:cursor-not-allowed px-4 sm:px-6 py-3 rounded-lg font-display text-xs sm:text-sm tracking-wider text-[#09090B] border-2 border-[#D2E823] transition-all cursor-pointer btn-press shadow-brutal-glass-sm min-h-[48px] font-bold"
             >
               {isCompiling ? (
                 <>
@@ -716,10 +713,10 @@ function ReactPlayground() {
         </main>
 
         {/* ────────────────────────────────────
-           PANEL 3: LIVE PREVIEW (40%)
+           PANEL 3: LIVE PREVIEW (Stacked on mobile)
            ──────────────────────────────────── */}
-        <section className="flex-1 flex flex-col overflow-hidden glass-outer border-l border-black/10 shadow-brutal-glass-lg text-[#09090B]">
-          <div className="shrink-0 flex items-center justify-between px-4 py-2.5 bg-transparent border-b border-[#09090B]/10">
+        <section className="w-full lg:w-[35%] lg:min-w-[320px] min-h-[280px] lg:min-h-0 flex flex-col overflow-hidden glass-outer border-t-2 lg:border-t-0 lg:border-l border-black/10 shadow-brutal-glass-lg text-[#09090B]">
+          <div className="shrink-0 flex items-center justify-between px-3 sm:px-4 py-2.5 bg-transparent border-b border-[#09090B]/10">
             <div className="flex items-center gap-2">
               <Eye className="w-3.5 h-3.5 text-[#09090B]" />
               <span className="text-[9px] font-code font-bold text-[#09090B]/60 tracking-[0.15em] uppercase">

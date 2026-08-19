@@ -257,15 +257,15 @@ export default function HeroSection({ onEnterMatrix, onViewArchitecture }: HeroS
         variants={staggerContainer}
         initial="hidden"
         animate="visible"
-        className="w-full min-h-screen flex items-center justify-center px-6 py-16"
+        className="w-full min-h-[85vh] sm:min-h-screen flex items-center justify-center px-4 sm:px-6 py-12 sm:py-16"
       >
-        <div className="flex flex-col items-center text-center max-w-4xl space-y-6 z-10">
+        <div className="flex flex-col items-center text-center max-w-4xl space-y-5 sm:space-y-6 z-10">
           {/* Dynamic Interactive Heading */}
           <motion.div variants={staggerChild} className="relative select-text">
-            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tighter leading-none text-[#09090B] glitch-hover select-none">
+            <h1 className="font-display text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tighter leading-none text-[#09090B] glitch-hover select-none">
               CRUSH THE BUGS.
               <br />
-              <span className="relative text-[#09090B] bg-[#D2E823] border-2 border-[#09090B] px-3 inline-block -rotate-1 brutal-shadow transform translate-y-1">
+              <span className="relative text-[#09090B] bg-[#D2E823] border-2 border-[#09090B] px-2 sm:px-3 inline-block -rotate-1 brutal-shadow transform translate-y-1 mt-1 sm:mt-2">
                 BUILD COOL STUFF
               </span>
             </h1>
@@ -275,13 +275,13 @@ export default function HeroSection({ onEnterMatrix, onViewArchitecture }: HeroS
           {/* Description Subtext */}
           <motion.p
             variants={staggerChild}
-            className="text-sm sm:text-base leading-relaxed max-w-2xl text-[#09090B]/80 font-normal font-sans-inter"
+            className="text-xs sm:text-sm md:text-base leading-relaxed max-w-2xl text-[#09090B]/80 font-normal font-sans-inter"
           >
             Hey! Welcome to <span className="font-bold text-[#D2E823]">SyntaxKnight</span>. Instead of watching boring, dry video tutorials or copying-and-pasting templates, you'll learn to code by solving interactive puzzles. We've got 20 hands-on paths to level up your skills, from styling web layouts to configuring real database queries.
           </motion.p>
 
           {/* Action Buttons Suite */}
-          <motion.div variants={staggerChild} className="flex flex-wrap gap-4 pt-2 justify-center select-none">
+          <motion.div variants={staggerChild} className="flex flex-wrap gap-3 sm:gap-4 pt-2 justify-center select-none">
             <motion.button
               whileHover={{ scale: 1.03, y: -2 }}
               whileTap={{ scale: 0.98 }}
@@ -290,7 +290,7 @@ export default function HeroSection({ onEnterMatrix, onViewArchitecture }: HeroS
                 audioEngine.playClickSound();
                 onEnterMatrix();
               }}
-              className="group flex items-center gap-2 px-6 py-4 bg-[#D2E823] text-black border-2 border-[#09090B] rounded-xl text-xs font-display tracking-wider hover:bg-[#D2E823]/90 transition-all shadow-brutal-glass cursor-pointer uppercase font-black"
+              className="group flex items-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 bg-[#D2E823] text-black border-2 border-[#09090B] rounded-xl text-xs sm:text-sm font-display tracking-wider hover:bg-[#D2E823]/90 transition-all shadow-brutal-glass cursor-pointer uppercase font-black min-h-[48px]"
             >
               GET STARTED
               <ArrowRight className="w-4 h-4 text-black group-hover:translate-x-1 transition-transform" />
@@ -308,18 +308,18 @@ export default function HeroSection({ onEnterMatrix, onViewArchitecture }: HeroS
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
-        className="w-full px-6 py-20"
+        className="w-full px-4 sm:px-6 py-12 sm:py-20"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center max-w-7xl mx-auto w-full">
           {/* Left Column: Section Title */}
-          <div className="lg:col-span-5 text-left space-y-4">
+          <div className="lg:col-span-5 text-left space-y-3 sm:space-y-4">
             <span className="text-[9px] font-code font-black text-[#D2E823] bg-black px-2 py-0.5 rounded uppercase tracking-widest block w-max">
               WHAT YOU'LL LEARN
             </span>
-            <h2 className="font-display text-4xl lg:text-5xl font-black text-[#09090B] tracking-tighter leading-none uppercase">
+            <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-black text-[#09090B] tracking-tighter leading-none uppercase">
               CHOOSE YOUR PATH
             </h2>
-            <p className="text-xs lg:text-sm leading-relaxed text-[#09090B]/70 font-sans-inter">
+            <p className="text-xs sm:text-sm leading-relaxed text-[#09090B]/70 font-sans-inter">
               We split the coding roadmap into 4 straightforward categories. You can start with basic web page layouts and work your way up to writing advanced database logic, safe memory patterns, and automated build tests.
             </p>
           </div>
@@ -428,18 +428,18 @@ export default function HeroSection({ onEnterMatrix, onViewArchitecture }: HeroS
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, amount: 0.2 }}
-        className="w-full px-6 py-20 pb-28"
+        className="w-full px-4 sm:px-6 py-12 sm:py-20 pb-20 sm:pb-28"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-7xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center max-w-7xl mx-auto w-full">
           {/* Title description Left (5 cols) */}
-          <div className="lg:col-span-5 text-left space-y-4">
+          <div className="lg:col-span-5 text-left space-y-3 sm:space-y-4">
             <span className="text-[9px] font-code font-black text-[#D2E823] bg-black px-2 py-0.5 rounded uppercase tracking-widest block w-max">
               INTERACTIVE SANDBOX
             </span>
-            <h2 className="font-display text-4xl lg:text-5xl font-black text-[#09090B] tracking-tighter leading-none uppercase">
+            <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-black text-[#09090B] tracking-tighter leading-none uppercase">
               GIVE IT A SPIN
             </h2>
-            <p className="text-xs lg:text-sm leading-relaxed text-[#09090B]/70 font-sans-inter">
+            <p className="text-xs sm:text-sm leading-relaxed text-[#09090B]/70 font-sans-inter">
               Try playing around with the code tabs on the right. You can watch how typing a line triggers checks and updates in the diagnostics console. Hit compile and watch your errors disappear in real-time.
             </p>
           </div>
@@ -507,15 +507,15 @@ export default function HeroSection({ onEnterMatrix, onViewArchitecture }: HeroS
               </div>
 
               {/* CODE EDITOR TEXTAREA BODY */}
-              <div className="p-4 min-h-[190px] font-code text-[11px] leading-relaxed relative flex flex-col justify-between select-text text-left">
-                <div className="flex items-start gap-3">
-                  <div className="text-white/20 select-none text-right font-code pr-1">
+              <div className="p-3 sm:p-4 min-h-[190px] font-code text-[11px] leading-relaxed relative flex flex-col justify-between select-text text-left overflow-x-auto">
+                <div className="flex items-start gap-2.5 sm:gap-3">
+                  <div className="text-white/20 select-none text-right font-code pr-1 shrink-0">
                     {activeTabDetails.content.map((_, i) => (
                       <div key={i}>{i + 1}</div>
                     ))}
                   </div>
 
-                  <div className="flex-grow whitespace-pre-wrap font-code text-white">
+                  <div className="flex-grow whitespace-pre font-code text-white overflow-x-auto">
                     {text.split('\n').map((lineText, lineIdx) => {
                       return (
                         <div key={lineIdx} className="font-code min-h-[1.5rem]">
@@ -648,7 +648,7 @@ export default function HeroSection({ onEnterMatrix, onViewArchitecture }: HeroS
                     }, 1000);
                   }}
                   disabled={compilingState === 'compiling'}
-                  className="w-full flex items-center justify-center gap-1.5 py-2 bg-white/5 border border-white/10 hover:border-[#D2E823] hover:text-[#D2E823] text-white/80 rounded-lg text-[9px] font-code font-bold uppercase transition-all duration-200 cursor-pointer"
+                  className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-white/5 border border-white/10 hover:border-[#D2E823] hover:text-[#D2E823] text-white/80 rounded-lg text-[9px] font-code font-bold uppercase transition-all duration-200 cursor-pointer min-h-[40px]"
                 >
                   <Cpu className={`w-3 h-3 ${compilingState === 'compiling' ? 'animate-spin' : ''}`} />
                   {compilingState === 'compiling' ? 'Running code...' : 'Run test checks'}
