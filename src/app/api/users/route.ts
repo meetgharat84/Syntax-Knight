@@ -184,9 +184,17 @@ export async function POST(request: Request) {
       lastActive: new Date(),
     };
 
+    const isIdString = (val?: string): boolean => {
+      if (!val) return false;
+      const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      const objectIdPattern = /^[0-9a-f]{24}$/i;
+      return uuidPattern.test(val.trim()) || objectIdPattern.test(val.trim());
+    };
+
     if (supabaseId) updateFields.supabaseId = String(supabaseId).trim();
-    if (fullName) updateFields.fullName = String(fullName).trim();
-    if (playerName) updateFields.playerName = String(playerName).trim();
+    if (fullName && !isIdString(fullName)) updateFields.fullName = String(fullName).trim();
+    if (playerName && !isIdString(playerName)) updateFields.playerName = String(playerName).trim();
+    else if (fullName && !isIdString(fullName)) updateFields.playerName = String(fullName).trim();
     if (dob !== undefined) updateFields.dob = String(dob);
     if (calculatedAge > 0) updateFields.age = calculatedAge;
     if (track) updateFields.track = String(track);

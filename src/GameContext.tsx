@@ -126,6 +126,13 @@ export const ACHIEVEMENTS = [
   },
 ];
 
+export const isUuidOrId = (str?: string): boolean => {
+  if (!str) return false;
+  const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const objectIdPattern = /^[0-9a-f]{24}$/i;
+  return uuidPattern.test(str.trim()) || objectIdPattern.test(str.trim());
+};
+
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Load unified save data from LocalStorage
   const [saveData] = useState<SaveData>(() => {
@@ -134,13 +141,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (raw) {
       try {
         const parsed = JSON.parse(raw);
-        return { ...DEFAULT_SAVE, ...parsed };
+        const validName = isUuidOrId(parsed.playerName) ? '' : (parsed.playerName || '');
+        return { ...DEFAULT_SAVE, ...parsed, playerName: validName };
       } catch {
         // Fallback below
       }
     }
     // Fallback load from legacy keys if exists
     const legacyName = localStorage.getItem('sk_player_name') || '';
+    const validLegacyName = isUuidOrId(legacyName) ? '' : legacyName;
     const legacyTrack = localStorage.getItem('sk_player_track') || '';
     const legacyXp = localStorage.getItem('sk_current_xp');
     const legacyLvl = localStorage.getItem('sk_player_level');
@@ -148,7 +157,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const legacyStreak = localStorage.getItem('sk_current_streak');
 
     return {
-      playerName: legacyName,
+      playerName: validLegacyName,
       playerTrack: legacyTrack,
       currentXP: legacyXp ? parseInt(legacyXp, 10) : 0,
       playerLevel: legacyLvl ? parseInt(legacyLvl, 10) : 1,
@@ -159,7 +168,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   });
 
-  const [playerName, setPlayerName] = useState<string>(saveData.playerName);
+  const [playerName, setPlayerName] = useState<string>(isUuidOrId(saveData.playerName) ? '' : saveData.playerName);
   const [playerTrack, setPlayerTrack] = useState<string>(saveData.playerTrack);
   const [currentXP, setCurrentXP] = useState<number>(saveData.currentXP);
   const [playerLevel, setPlayerLevel] = useState<number>(saveData.playerLevel);
@@ -191,7 +200,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     currentUserIdRef.current = supabaseId;
     const mongoData = await getPlayerFromMongo(supabaseId);
     if (mongoData) {
-      if (mongoData.playerName) setPlayerName(mongoData.playerName);
+      if (mongoData.playerName && !isUuidOrId(mongoData.playerName)) {
+        setPlayerName(mongoData.playerName);
+      } else if (mongoData.fullName && !isUuidOrId(mongoData.fullName)) {
+        setPlayerName(mongoData.fullName.toUpperCase());
+      }
       if (mongoData.playerTrack) setPlayerTrack(mongoData.playerTrack);
       if (typeof mongoData.currentXP === 'number') setCurrentXP(mongoData.currentXP);
       if (typeof mongoData.playerLevel === 'number') setPlayerLevel(mongoData.playerLevel);
@@ -204,15 +217,16 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Initial sync with MongoDB on mount if player name exists
   useEffect(() => {
-    if (saveData.playerName) {
+    if (saveData.playerName && !isUuidOrId(saveData.playerName)) {
       syncWithMongoDB(saveData.playerName);
     }
   }, [saveData.playerName, syncWithMongoDB]);
 
   // Unified non-blocking Auto-save effect for LocalStorage & MongoDB
   useEffect(() => {
+    const cleanPlayerName = isUuidOrId(playerName) ? '' : playerName;
     const payload: SaveData = {
-      playerName,
+      playerName: cleanPlayerName,
       playerTrack,
       currentXP,
       playerLevel,
@@ -223,7 +237,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
     const saveTimer = setTimeout(() => {
       localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
-      const targetId = currentUserIdRef.current || playerName;
+      const targetId = currentUserIdRef.current || cleanPlayerName;
       if (targetId) {
         savePlayerToMongo(targetId, payload);
       }
@@ -232,11 +246,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [playerName, playerTrack, currentXP, playerLevel, completedMissions, currentStreak, unlockedBadges, playerTokens]);
 
   const setPlayerProfile = useCallback((name: string, track: string) => {
-    setPlayerName(name);
+    const cleanName = isUuidOrId(name) ? 'KNIGHT' : name;
+    setPlayerName(cleanName);
     setPlayerTrack(track);
-    if (name) {
-      currentUserIdRef.current = name;
-      syncWithMongoDB(name);
+    if (cleanName && !isUuidOrId(cleanName)) {
+      currentUserIdRef.current = cleanName;
+      syncWithMongoDB(cleanName);
     }
   }, [syncWithMongoDB]);
 

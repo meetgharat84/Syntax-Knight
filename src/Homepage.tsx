@@ -3,12 +3,30 @@
 import { useState, useEffect, useRef } from 'react';
 // @ts-ignore
 import { supabase } from './supabaseClient';
-import { useGame } from './GameContext';
+import { useGame, isUuidOrId } from './GameContext';
 import { worldSyllabus } from './syllabusData';
 import { evaluateCode } from './lib/evaluator';
 import { motion, AnimatePresence } from 'framer-motion';
 import HeroSection from './HeroSection';
 import AuthMatrix from './AuthMatrix';
+
+const resolvePlayerName = (user: any): string => {
+  if (!user) return 'KNIGHT';
+  const meta = user.user_metadata || {};
+  const candidates = [
+    meta.full_name,
+    meta.name,
+    meta.user_name,
+    meta.playerName,
+    user.email ? user.email.split('@')[0] : ''
+  ];
+  for (const c of candidates) {
+    if (c && typeof c === 'string' && !isUuidOrId(c) && c.trim()) {
+      return c.trim().toUpperCase();
+    }
+  }
+  return 'KNIGHT';
+};
 import {
   Sparkles,
   ArrowLeft,
@@ -1263,6 +1281,8 @@ export default function Homepage() {
     playerName ? 'dashboard' : 'home'
   );
 
+  const displayPlayerName = (playerName && !isUuidOrId(playerName)) ? playerName : 'KNIGHT';
+
   // Safety fallback for invalid currentScreen value
   useEffect(() => {
     const validScreens = ['home', 'auth', 'dashboard', 'roadmap', 'arena', 'pvp', 'leaderboard', 'codex', 'advancements', 'shop'];
@@ -1278,8 +1298,8 @@ export default function Homepage() {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
           const user = session.user;
-          const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'KNIGHT';
-          setPlayerProfile(name.toUpperCase(), (user.user_metadata?.track || 'Frontend') as any);
+          const name = resolvePlayerName(user);
+          setPlayerProfile(name, (user.user_metadata?.track || 'Frontend') as any);
           syncWithMongoDB(user.id);
           setCurrentScreen('dashboard');
         }
@@ -1292,8 +1312,8 @@ export default function Homepage() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: any, session: any) => {
       if (session?.user) {
         const user = session.user;
-        const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'KNIGHT';
-        setPlayerProfile(name.toUpperCase(), (user.user_metadata?.track || 'Frontend') as any);
+        const name = resolvePlayerName(user);
+        setPlayerProfile(name, (user.user_metadata?.track || 'Frontend') as any);
         syncWithMongoDB(user.id);
         setCurrentScreen('dashboard');
       } else if (event === 'SIGNED_OUT') {
@@ -2392,7 +2412,7 @@ export default function Homepage() {
               <div className="hidden lg:flex items-center gap-3">
                 <div className="flex items-center gap-2 text-[11px] font-code glass-inner px-3 py-1 rounded-lg shadow-brutal-glass-sm text-[#F8F4E8]">
                   <span className="font-bold text-[#F8F4E8]/60">STUDENT:</span>
-                  <span className="font-bold text-black bg-[#D2E823]/80 backdrop-blur-sm px-1.5 py-0.5 rounded border border-[#09090B]/10">{playerName}</span>
+                  <span className="font-bold text-black bg-[#D2E823]/80 backdrop-blur-sm px-1.5 py-0.5 rounded border border-[#09090B]/10">{displayPlayerName}</span>
                   <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border-2 uppercase tracking-wide ${getPlayerRank(completedMissions.length).color}`}>{getPlayerRank(completedMissions.length).title}</span>
                 </div>
               </div>
@@ -2479,7 +2499,7 @@ export default function Homepage() {
                   <div className="flex items-center justify-between p-2.5 glass-inner rounded-lg text-xs text-[#F8F4E8]">
                     <div className="flex items-center gap-1.5">
                       <span className="text-[#F8F4E8]/60 text-[10px]">KNIGHT:</span>
-                      <span className="font-bold text-black bg-[#D2E823] px-1.5 py-0.5 rounded text-[10px]">{playerName}</span>
+                      <span className="font-bold text-black bg-[#D2E823] px-1.5 py-0.5 rounded text-[10px]">{displayPlayerName}</span>
                     </div>
                     <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded border-2 uppercase tracking-wide ${getPlayerRank(completedMissions.length).color}`}>
                       {getPlayerRank(completedMissions.length).title}
@@ -2613,7 +2633,7 @@ export default function Homepage() {
                             )}
                           </div>
                           <div className="flex items-center gap-3 mt-1.5 flex-wrap">
-                            <h2 className="text-xl font-display text-slate-900 leading-none">{playerName}</h2>
+                            <h2 className="text-xl font-display text-slate-900 leading-none">{displayPlayerName}</h2>
                             <span className={`text-[8px] font-code font-bold px-2 py-0.5 border rounded uppercase tracking-wider ${getPlayerRank(completedMissions.length).color}`}>
                               🏆 {getPlayerRank(completedMissions.length).title}
                             </span>

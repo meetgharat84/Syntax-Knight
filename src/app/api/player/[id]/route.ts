@@ -4,6 +4,13 @@ import connectToDatabase from '@/lib/mongodb';
 import { User } from '@/app/api/users/route';
 import { secureJsonResponse, checkRateLimit } from '@/lib/security';
 
+const isIdString = (val?: string): boolean => {
+  if (!val) return false;
+  const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const objectIdPattern = /^[0-9a-f]{24}$/i;
+  return uuidPattern.test(val.trim()) || objectIdPattern.test(val.trim());
+};
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -35,6 +42,10 @@ export async function GET(
         { success: false, error: 'Player not found' },
         404
       );
+    }
+
+    if (user.playerName && isIdString(user.playerName)) {
+      user.playerName = user.fullName || (user.email && !user.email.includes('@player.syntaxknight.local') ? user.email.split('@')[0].toUpperCase() : 'KNIGHT');
     }
 
     return secureJsonResponse(user);
@@ -116,8 +127,20 @@ export async function PUT(
       }
     }
 
+    if (isIdString(safeSetFields.playerName)) {
+      safeSetFields.playerName = undefined;
+    }
+
     if (!safeSetFields.playerName) {
-      safeSetFields.playerName = cleanId;
+      if (safeSetFields.fullName && !isIdString(safeSetFields.fullName)) {
+        safeSetFields.playerName = safeSetFields.fullName;
+      } else if (safeSetFields.email && !safeSetFields.email.includes('@player.syntaxknight.local')) {
+        safeSetFields.playerName = safeSetFields.email.split('@')[0].toUpperCase();
+      } else if (!isIdString(cleanId) && !cleanId.includes('@')) {
+        safeSetFields.playerName = cleanId;
+      } else {
+        safeSetFields.playerName = 'KNIGHT';
+      }
     }
 
     const user = await User.findOneAndUpdate(

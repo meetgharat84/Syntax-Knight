@@ -1,6 +1,8 @@
 export interface PlayerData {
   supabaseId: string;
+  fullName?: string;
   playerName: string;
+  email?: string;
   playerTrack: string;
   currentXP: number;
   playerLevel: number;
