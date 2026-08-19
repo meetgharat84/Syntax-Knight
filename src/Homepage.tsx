@@ -1919,6 +1919,7 @@ export default function Homepage() {
           prompt: promptText,
           currentCode: userCode,
           activeFile: arenaChallenge?.title || 'workspace',
+          model: selectedAiModel,
           history: mentorMessages.slice(-4).map(m => ({
             role: m.sender === 'ai' ? 'assistant' : 'user',
             content: m.text,
@@ -2220,6 +2221,7 @@ export default function Homepage() {
           prompt: userText,
           currentCode: userCode,
           activeFile: arenaChallenge?.title || 'workspace',
+          model: selectedAiModel,
           history: mentorMessages.slice(-4).map(m => ({
             role: m.sender === 'ai' ? 'assistant' : 'user',
             content: m.text,

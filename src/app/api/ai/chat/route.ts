@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { prompt, currentCode = '', activeFile = '', history = [] } = body;
+    const { prompt, currentCode = '', activeFile = '', history = [], model = 'openrouter/auto' } = body;
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json({ success: false, error: 'Prompt is required' }, { status: 400 });
@@ -28,9 +28,10 @@ Guidelines:
 - Current active file: "${activeFile || 'workspace'}"
 ${currentCode ? `Current editor code:\n\`\`\`\n${currentCode.slice(0, 1500)}\n\`\`\`` : ''}`;
 
-    // 1. Try OpenRouter API with auto-routing model
+    // 1. Try OpenRouter API with selected or auto-routing model
     if (openrouterKey && !openrouterKey.startsWith('your_real_')) {
       try {
+        const targetModel = model && typeof model === 'string' && model.trim() ? model.trim() : 'openrouter/auto';
         const orResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
           headers: {
@@ -40,7 +41,7 @@ ${currentCode ? `Current editor code:\n\`\`\`\n${currentCode.slice(0, 1500)}\n\`
             'X-Title': 'SyntaxKnight',
           },
           body: JSON.stringify({
-            model: 'openrouter/auto',
+            model: targetModel,
             messages: [
               { role: 'system', content: systemPrompt },
               ...(Array.isArray(history) ? history.slice(-4) : []),
