@@ -18,9 +18,6 @@ import { audioEngine } from './audioEngine';
 import { generateQuestWithGemini } from './services/aiEngine';
 import type { GeneratedQuest } from './services/aiEngine';
 
-// Get Gemini environment variable
-const GEMINI_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY || process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY || process.env.NEXT_PUBLIC_BYTEZ_API_KEY || process.env.BYTEZ_API_KEY || '';
-
 export default function AiLevelGenerator() {
   const navigate = useNavigate();
   const [prompt, setPrompt] = useState('');
@@ -29,28 +26,9 @@ export default function AiLevelGenerator() {
   const [errorMsg, setErrorMsg] = useState('');
   const [copied, setCopied] = useState(false);
 
-  // Guard clause verification
-  const isKeyAuthorized = !!GEMINI_KEY && GEMINI_KEY !== 'your_real_gemini_key_here' && !GEMINI_KEY.startsWith('your_real_');
-
-  useEffect(() => {
-    if (!isKeyAuthorized) {
-      console.error(
-        '🔒 SYSTEM CORE LOCKED: Missing Gemini API Key Authorization. ' +
-        'Please verify VITE_GEMINI_API_KEY is configured in your root .env file.'
-      );
-    }
-  }, [isKeyAuthorized]);
-
   const handleGenerateQuest = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isGenerating) return;
-
-    // Strict guard clause: Block execution if API key is invalid or empty
-    if (!isKeyAuthorized) {
-      setErrorMsg('🔒 SYSTEM CORE LOCKED: Missing API Key Authorization.');
-      audioEngine.playErrorBuzzer();
-      return;
-    }
+    if (isGenerating || !prompt.trim()) return;
 
     setIsGenerating(true);
     setErrorMsg('');
@@ -58,7 +36,7 @@ export default function AiLevelGenerator() {
     audioEngine.playClickSound();
 
     try {
-      const generatedQuest = await generateQuestWithGemini(prompt);
+      const generatedQuest = await generateQuestWithGemini(prompt.trim());
       setResult(generatedQuest);
       audioEngine.playSuccessChime();
     } catch (err: any) {
@@ -125,22 +103,6 @@ export default function AiLevelGenerator() {
               <h2 className="text-xs font-bold text-[#09090B] tracking-widest uppercase font-display">1. AI Quest Generator Prompt</h2>
             </div>
 
-            {/* Check if key is authorized */}
-            {!isKeyAuthorized ? (
-              /* SCREEN Fallback Alert (Neo-Brutalist Warning Callout) */
-              <div className="bg-[#DC2626]/10 border-4 border-[#DC2626] text-[#DC2626] p-5 rounded-lg shadow-brutal-glass-sm flex flex-col items-center justify-center text-center gap-4 py-8">
-                <AlertTriangle className="w-10 h-10 animate-bounce" />
-                <div>
-                  <h3 className="font-display text-lg tracking-tight">🔒 SYSTEM CORE LOCKED</h3>
-                  <p className="text-[11px] font-code font-bold uppercase tracking-wide mt-1.5">
-                    Missing API Key Authorization.
-                  </p>
-                </div>
-                <p className="text-xs font-body max-w-md leading-relaxed text-[#DC2626]/80 mt-1">
-                  Please create a <code className="bg-[#DC2626] text-white px-1.5 py-0.5 rounded font-bold font-code">.env</code> file in the project's root directory, set <code className="bg-[#DC2626] text-white px-1.5 py-0.5 rounded font-bold font-code">VITE_GEMINI_API_KEY</code> correctly, and restart the development server.
-                </p>
-              </div>
-            ) : (
               <form onSubmit={handleGenerateQuest} className="space-y-5">
                 <div className="space-y-2">
                   <label className="text-[10px] text-[#09090B]/60 uppercase tracking-wider font-bold">Quest Goal / Prompt</label>
@@ -177,12 +139,11 @@ export default function AiLevelGenerator() {
                   )}
                 </button>
               </form>
-            )}
           </div>
 
           <div className="border-t-2 border-[#09090B]/10 pt-3 mt-6 flex justify-between gap-3 text-[9px] font-code text-[#09090B]/40 select-none">
             <span>SECURE CREDENTIAL HANDLING: ENABLED</span>
-            <span>API ACCESS: {isKeyAuthorized ? 'AUTHORIZED' : 'UNAUTHORIZED'}</span>
+            <span>API ACCESS: ACTIVE</span>
           </div>
         </section>
 
