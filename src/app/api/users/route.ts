@@ -116,9 +116,9 @@ export async function GET(request: Request) {
     const users = await User.find().sort({ createdAt: -1 }).limit(50);
     return secureJsonResponse({ success: true, count: users.length, users });
   } catch (error: any) {
-    console.error('Error fetching users from MongoDB:', error);
+    console.error('❌ [USERS_GET_ERROR] Error fetching users from MongoDB:', error?.message || error, error?.stack);
     return secureJsonResponse(
-      { success: false, error: 'Failed to fetch users' },
+      { success: false, error: 'Failed to fetch users', details: error?.message },
       500
     );
   }
@@ -148,7 +148,6 @@ export async function POST(request: Request) {
       track,
       playerTrack,
       role,
-      restrictedMode,
       avatarUrl,
       currentXP,
       playerLevel,
@@ -158,26 +157,38 @@ export async function POST(request: Request) {
       claimedAdvancements,
       unlockedItems,
       playerTokens,
-      inventory
+      inventory,
     } = body;
 
-    if (!email || typeof email !== 'string' || !email.trim()) {
+    // Validate email
+    const emailStr = String(email || '').trim();
+    if (!emailStr || !emailStr.includes('@')) {
       return secureJsonResponse(
-        { success: false, error: 'Valid email field is required' },
+        { success: false, error: 'A valid email address is required.' },
         400
       );
     }
 
-    const emailLower = String(email).trim().toLowerCase();
+    const emailLower = emailStr.toLowerCase();
 
-    // Age calculation & Under-18 restriction flag assignment
-    let calculatedAge = typeof age === 'number' ? age : Number(age) || 0;
-    if (dob && !calculatedAge) {
-      const birthDate = new Date(String(dob));
-      const today = new Date();
-      calculatedAge = today.getFullYear() - birthDate.getFullYear();
+    // Check age verification
+    let isUnder18 = false;
+    if (dob) {
+      const birthDate = new Date(dob);
+      if (!isNaN(birthDate.getTime())) {
+        const today = new Date();
+        let calculatedAge = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          calculatedAge--;
+        }
+        if (calculatedAge < 18) {
+          isUnder18 = true;
+        }
+      }
+    } else if (age !== undefined && typeof age === 'number' && age < 18) {
+      isUnder18 = true;
     }
-    const isUnder18 = calculatedAge > 0 ? calculatedAge < 18 : Boolean(restrictedMode);
 
     const updateFields: Record<string, any> = {
       email: emailLower,
@@ -192,11 +203,19 @@ export async function POST(request: Request) {
     };
 
     if (supabaseId) updateFields.supabaseId = String(supabaseId).trim();
-    if (fullName && !isIdString(fullName)) updateFields.fullName = String(fullName).trim();
-    if (playerName && !isIdString(playerName)) updateFields.playerName = String(playerName).trim();
-    else if (fullName && !isIdString(fullName)) updateFields.playerName = String(fullName).trim();
-    if (dob !== undefined) updateFields.dob = String(dob);
-    if (calculatedAge > 0) updateFields.age = calculatedAge;
+    if (fullName) updateFields.fullName = String(fullName).trim();
+    
+    // Sanitize playerName - ignore UUIDs
+    if (playerName && typeof playerName === 'string' && !isIdString(playerName)) {
+      updateFields.playerName = playerName.trim();
+    } else if (fullName && typeof fullName === 'string' && !isIdString(fullName)) {
+      updateFields.playerName = fullName.trim();
+    } else if (!emailLower.includes('@player.syntaxknight.local')) {
+      updateFields.playerName = emailLower.split('@')[0].toUpperCase();
+    }
+
+    if (dob) updateFields.dob = String(dob);
+    if (age !== undefined && typeof age === 'number') updateFields.age = age;
     if (track) updateFields.track = String(track);
     if (playerTrack) updateFields.playerTrack = String(playerTrack);
     if (role) updateFields.role = String(role);
@@ -224,11 +243,12 @@ export async function POST(request: Request) {
       user,
     });
   } catch (error: any) {
-    console.error('Error saving user to MongoDB:', error);
+    console.error('❌ [USERS_POST_ERROR] Error saving user to MongoDB:', error?.message || error, error?.stack);
     return secureJsonResponse(
       {
         success: false,
         error: 'Failed to save user to database',
+        details: error?.message,
       },
       500
     );

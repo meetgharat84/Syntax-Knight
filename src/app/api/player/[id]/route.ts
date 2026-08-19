@@ -50,8 +50,9 @@ export async function GET(
 
     return secureJsonResponse(user);
   } catch (error: any) {
+    console.error('❌ [PLAYER_GET_ERROR] Error in GET /api/player/[id]:', error?.message || error, error?.stack);
     return secureJsonResponse(
-      { success: false, error: 'Server error' },
+      { success: false, error: 'Server error retrieving player progress', details: error?.message },
       500
     );
   }
@@ -151,9 +152,9 @@ export async function PUT(
 
     return secureJsonResponse({ success: true, user });
   } catch (error: any) {
-    console.error('Error in PUT /api/player/[id]:', error);
+    console.error('❌ [PLAYER_PUT_ERROR] Error in PUT /api/player/[id]:', error?.message || error, error?.stack);
     return secureJsonResponse(
-      { success: false, error: 'Server error saving player progress' },
+      { success: false, error: 'Server error saving player progress', details: error?.message },
       500
     );
   }
