@@ -8,6 +8,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 export const metadata: Metadata = {
   title: 'SyntaxKnight - Neo-Brutalist Code Combat RPG',
   description: 'An interactive neo-brutalist code combat RPG. Master HTML, CSS, JavaScript, and React through gamified quests.',
+  verification: {
+    google: 'uKusfqskGYeBB0dcueisvs2WCfSRe8PJR27VqQI9T0k',
+  },
 };
 
 export default function RootLayout({
