@@ -1,6 +1,6 @@
 import * as babelParser from '@babel/parser';
 
-// SyntaxKnight Evaluator Engine v1.0.1 - Vercel Fresh Build Trigger
+// SyntaxKnight Evaluator Engine v2.0 - Multi-Strategy Static Code Evaluator
 export interface EvaluationResult {
   isCorrect: boolean;
   errorMsg: string;
@@ -217,28 +217,99 @@ export function parseJsTsAst(code: string): { isValid: boolean; errorMsg?: strin
 }
 
 /**
+ * Cleans and unescapes double/quadruple backslashes from syllabus/database regex patterns.
+ * e.g., "console\\\\.log\\\\(\\\\s*[\"\\']" -> "console\\.log\\(\\s*[\"\\']"
+ */
+export function unescapeRegexPattern(pattern: string): string {
+  if (!pattern) return '';
+  let cleaned = pattern;
+  // If pattern contains quadruple or double backslashes before regex tokens, reduce them
+  cleaned = cleaned.replace(/\\\\([sSwWdDbBnrftv\\/()[\]{}*+?.^$|])/g, '\\$1');
+  cleaned = cleaned.replace(/\\\\/g, '\\');
+  return cleaned;
+}
+
+/**
+ * Normalizes code by stripping comments, collapsing whitespace, and normalizing quotes.
+ */
+export function cleanCodeForComparison(code: string): string {
+  if (!code) return '';
+  let cleaned = code
+    .replace(/\/\*[\s\S]*?\*\//g, '') // remove multi-line comments
+    .replace(/\/\/.*$/gm, '')         // remove single-line comments
+    .replace(/#.*$/gm, '');          // remove python comments
+  
+  // Normalize quotes: convert single and double quotes and backticks to double quotes
+  cleaned = cleaned.replace(/['"`](.*?)['"`]/g, '"$1"');
+
+  // Normalize whitespace: collapse multiple spaces and newlines
+  cleaned = cleaned.replace(/\s+/g, ' ').trim();
+
+  // Normalize around operators and punctuation
+  cleaned = cleaned.replace(/\s*([=+\-*/%:;<>!&|,(){}[\]])\s*/g, '$1');
+
+  // Strip trailing semicolons
+  cleaned = cleaned.replace(/;+$/g, '');
+
+  return cleaned;
+}
+
+/**
+ * Converts a raw code snippet or token into a lenient regular expression.
+ */
+export function buildLenientPattern(targetStr: string): RegExp {
+  const unescaped = unescapeRegexPattern(targetStr);
+
+  // If it already looks like an explicit regex with character classes or wildcards (e.g. <h1[^>]*>.*</h1>)
+  const isExplicitRegex = /[\[\\^$.*+?(){}|]/.test(unescaped) && (unescaped.includes('.*') || unescaped.includes('\\s') || unescaped.includes('[^') || unescaped.includes('\\d'));
+
+  if (isExplicitRegex) {
+    try {
+      // Relax string literal requirements
+      const relaxed = unescaped
+        .replace(/\["\\'\][^"'\\]+?\["\\'\]/g, '(["\'].*?["\']|__STRING_LITERAL__)')
+        .replace(/\\?["']([^"'\\]+?)\\?["']/g, '(["\'].*?["\']|__STRING_LITERAL__)');
+      return new RegExp(relaxed, 'i');
+    } catch (_e) {
+      return new RegExp(unescaped, 'i');
+    }
+  }
+
+  // Escape regex special chars from raw snippet, but make whitespace and quotes flexible
+  const escaped = unescaped.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  let flexible = escaped
+    // Allow flexible whitespace around tokens
+    .replace(/\\\s\+/g, '\\s+')
+    .replace(/\s+/g, '\\s*')
+    // Allow flexible quotes
+    .replace(/\\?["'](.*?)["']/g, '["\'].*?["\']')
+    // Make trailing semicolon optional
+    .replace(/;+$/, '(?:;)?');
+
+  return new RegExp(flexible, 'i');
+}
+
+/**
  * Transforms rigid regexes containing specific string literal requirements
  * into relaxed regexes that accept wildcard string literals (`__STRING_LITERAL__` or any string).
  */
 export function relaxValidationRegex(regexStr: string): RegExp {
   try {
-    let relaxed = regexStr;
-
-    relaxed = relaxed
+    const unescaped = unescapeRegexPattern(regexStr);
+    let relaxed = unescaped
       .replace(/\["\\'\][^"'\\]+?\["\\'\]/g, '(["\'].*?["\']|__STRING_LITERAL__)')
       .replace(/\\?["']([^"'\\]+?)\\?["']/g, '(["\'].*?["\']|__STRING_LITERAL__)');
 
     return new RegExp(relaxed, 'i');
   } catch (_err) {
-    return new RegExp(regexStr, 'i');
+    return new RegExp(unescapeRegexPattern(regexStr), 'i');
   }
 }
 
-const MAX_CODE_LENGTH = 50000;
-
 /**
  * Main evaluation entry point for SyntaxKnight.
- * Checks AST / Syntax FIRST, then validates code structure against the relaxed requirements.
+ * Checks AST / Syntax FIRST, then validates code structure against multiple lenient strategies.
  * Performs 100% isolated static AST parsing without eval() or dynamic code execution.
  */
 export function evaluateCode(
@@ -257,11 +328,11 @@ export function evaluateCode(
       };
     }
 
-    if (trimmed.length > MAX_CODE_LENGTH) {
+    if (trimmed.length > 50000) {
       return {
         isCorrect: false,
         syntaxValid: false,
-        errorMsg: `Code payload exceeds safety limit (${MAX_CODE_LENGTH} characters).`
+        errorMsg: 'Code payload exceeds safety limit (50,000 characters).'
       };
     }
 
@@ -312,16 +383,59 @@ export function evaluateCode(
     }
 
     // Syntax is 100% valid at this point!
-    // 5. Structure & Pattern Validation with String Wildcarding
+    // 5. Multi-Strategy Structure & Pattern Validation
+    const cleanPattern = unescapeRegexPattern(validationRegex);
     const normalizedCode = normalizeStringLiterals(trimmed);
+    const simplifiedUserCode = cleanCodeForComparison(trimmed);
+    const simplifiedPattern = cleanCodeForComparison(cleanPattern);
 
-    const originalRegex = new RegExp(validationRegex, 'i');
-    const relaxedRegex = relaxValidationRegex(validationRegex);
+    let passes = false;
 
-    const passesOriginal = originalRegex.test(trimmed);
-    const passesNormalized = relaxedRegex.test(normalizedCode) || originalRegex.test(normalizedCode);
+    // Strategy A: Direct Regex Match with unescaped pattern
+    try {
+      const directReg = new RegExp(cleanPattern, 'i');
+      if (directReg.test(trimmed) || directReg.test(normalizedCode)) {
+        passes = true;
+      }
+    } catch (_e) {}
 
-    if (passesOriginal || passesNormalized) {
+    // Strategy B: Relaxed Regex with String Wildcarding
+    if (!passes) {
+      try {
+        const relaxedReg = relaxValidationRegex(validationRegex);
+        if (relaxedReg.test(trimmed) || relaxedReg.test(normalizedCode)) {
+          passes = true;
+        }
+      } catch (_e) {}
+    }
+
+    // Strategy C: Lenient Pattern Match (Flexible Whitespace, Quotes, & Semicolons)
+    if (!passes) {
+      try {
+        const lenientReg = buildLenientPattern(validationRegex);
+        if (lenientReg.test(trimmed) || lenientReg.test(normalizedCode)) {
+          passes = true;
+        }
+      } catch (_e) {}
+    }
+
+    // Strategy D: Normalized Token Substring Match
+    if (!passes && simplifiedPattern.length > 0) {
+      if (simplifiedUserCode.includes(simplifiedPattern)) {
+        passes = true;
+      }
+    }
+
+    // Strategy E: Semicolon-Insensitive & Quote-Insensitive Match
+    if (!passes) {
+      const userNoSemi = simplifiedUserCode.replace(/;/g, '');
+      const patternNoSemi = simplifiedPattern.replace(/;/g, '');
+      if (userNoSemi.includes(patternNoSemi)) {
+        passes = true;
+      }
+    }
+
+    if (passes) {
       return {
         isCorrect: true,
         syntaxValid: true,
