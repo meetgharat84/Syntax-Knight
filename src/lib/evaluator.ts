@@ -40,13 +40,23 @@ export function normalizeStringLiterals(code: string): string {
 /**
  * Validates whether string literals (quotes and template strings) in code are properly closed.
  */
-export function checkUnclosedStrings(code: string): { isValid: boolean; errorMsg?: string; line?: number } {
+export function checkUnclosedStrings(
+  code: string,
+  language: string = 'javascript'
+): { isValid: boolean; errorMsg?: string; line?: number } {
+  const isRust = language.toLowerCase().includes('rust');
   const lines = code.split('\n');
   let inMultiLineString: string | null = null;
   let multiLineStart = 0;
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+    let line = lines[i];
+
+    // In Rust, strip out lifetime annotations like 'a, 'static, 'de before checking quotes
+    if (isRust) {
+      line = line.replace(/'[a-zA-Z_][a-zA-Z0-9_]*/g, '');
+    }
+
     let inSingleQuote = false;
     let inDoubleQuote = false;
     let escaped = false;
@@ -96,15 +106,27 @@ export function checkUnclosedStrings(code: string): { isValid: boolean; errorMsg
 /**
  * Checks matching brackets, parentheses, and braces across code lines.
  */
-export function checkMatchingBrackets(code: string): { isValid: boolean; errorMsg?: string } {
+export function checkMatchingBrackets(
+  code: string,
+  language: string = 'javascript'
+): { isValid: boolean; errorMsg?: string } {
   const stack: { char: string; line: number }[] = [];
   const lines = code.split('\n');
+  const langLower = language.toLowerCase();
+  const usesHashComments = ['python', 'py', 'bash', 'shell', 'sh', 'yaml', 'yml', 'r'].includes(langLower);
+  const isRust = langLower.includes('rust');
 
   let inString: string | null = null;
   let escaped = false;
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
+    let line = lines[i];
+
+    // In Rust, strip out lifetime annotations like 'a, 'static, 'de and char literals before checking brackets
+    if (isRust) {
+      line = line.replace(/'[a-zA-Z_][a-zA-Z0-9_]*/g, '');
+      line = line.replace(/'[^'\\]'/g, '');
+    }
 
     for (let j = 0; j < line.length; j++) {
       const char = line[j];
@@ -133,7 +155,8 @@ export function checkMatchingBrackets(code: string): { isValid: boolean; errorMs
       if (char === '/' && line[j + 1] === '/') {
         break;
       }
-      if (char === '#') {
+      // Hash is only a comment for languages like Python/Shell, never CSS/JS/HTML/C++
+      if (char === '#' && usesHashComments) {
         break;
       }
 
@@ -223,9 +246,13 @@ export function parseJsTsAst(code: string): { isValid: boolean; errorMsg?: strin
 export function unescapeRegexPattern(pattern: string): string {
   if (!pattern) return '';
   let cleaned = pattern;
+  // Handle PHP $_GET / $_POST patterns before general backslash stripping
+  cleaned = cleaned.replace(/\\*(_GET|_POST|_REQUEST|_SESSION|_SERVER|_COOKIE)/g, '(\\$|_)?$1');
   // If pattern contains quadruple or double backslashes before regex tokens, reduce them
   cleaned = cleaned.replace(/\\\\([sSwWdDbBnrftv\\/()[\]{}*+?.^$|])/g, '\\$1');
   cleaned = cleaned.replace(/\\\\/g, '\\');
+  // In HTML tags like <blockquote>, allow optional attributes: <blockquote(?:\s+[^>]*)?>
+  cleaned = cleaned.replace(/<([a-zA-Z0-9_-]+)>/g, '<$1(?:\\s+[^>]*)?>');
   return cleaned;
 }
 
@@ -265,13 +292,13 @@ export function buildLenientPattern(targetStr: string): RegExp {
 
   if (isExplicitRegex) {
     try {
-      // Relax string literal requirements
+      // Relax string literal requirements and make .* match across lines
       const relaxed = unescaped
         .replace(/\["\\'\][^"'\\]+?\["\\'\]/g, '(["\'].*?["\']|__STRING_LITERAL__)')
         .replace(/\\?["']([^"'\\]+?)\\?["']/g, '(["\'].*?["\']|__STRING_LITERAL__)');
-      return new RegExp(relaxed, 'i');
+      return new RegExp(relaxed, 'is');
     } catch (_e) {
-      return new RegExp(unescaped, 'i');
+      return new RegExp(unescaped, 'is');
     }
   }
 
@@ -287,7 +314,7 @@ export function buildLenientPattern(targetStr: string): RegExp {
     // Make trailing semicolon optional
     .replace(/;+$/, '(?:;)?');
 
-  return new RegExp(flexible, 'i');
+  return new RegExp(flexible, 'is');
 }
 
 /**
@@ -301,9 +328,9 @@ export function relaxValidationRegex(regexStr: string): RegExp {
       .replace(/\["\\'\][^"'\\]+?\["\\'\]/g, '(["\'].*?["\']|__STRING_LITERAL__)')
       .replace(/\\?["']([^"'\\]+?)\\?["']/g, '(["\'].*?["\']|__STRING_LITERAL__)');
 
-    return new RegExp(relaxed, 'i');
+    return new RegExp(relaxed, 'is');
   } catch (_err) {
-    return new RegExp(unescapeRegexPattern(regexStr), 'i');
+    return new RegExp(unescapeRegexPattern(regexStr), 'is');
   }
 }
 
@@ -337,7 +364,7 @@ export function evaluateCode(
     }
 
     // 1. Check unclosed string literals
-    const stringCheck = checkUnclosedStrings(trimmed);
+    const stringCheck = checkUnclosedStrings(trimmed, language);
     if (!stringCheck.isValid) {
       return {
         isCorrect: false,
@@ -347,7 +374,7 @@ export function evaluateCode(
     }
 
     // 2. Check matching brackets/parentheses/braces
-    const bracketCheck = checkMatchingBrackets(trimmed);
+    const bracketCheck = checkMatchingBrackets(trimmed, language);
     if (!bracketCheck.isValid) {
       return {
         isCorrect: false,
@@ -358,15 +385,12 @@ export function evaluateCode(
 
     const langLower = language.toLowerCase();
 
-    // 3. Full AST syntax check for JavaScript / TypeScript / React
+    // 3. Optional AST syntax check for JavaScript / TypeScript / React (non-blocking if pattern matches)
+    let astSyntaxError = '';
     if (['javascript', 'js', 'typescript', 'ts', 'react', 'jsx', 'tsx'].includes(langLower)) {
       const astResult = parseJsTsAst(trimmed);
       if (!astResult.isValid) {
-        return {
-          isCorrect: false,
-          syntaxValid: false,
-          errorMsg: astResult.errorMsg || 'Syntax Error in JavaScript/TypeScript code.'
-        };
+        astSyntaxError = astResult.errorMsg || 'Syntax Error in JavaScript/TypeScript code.';
       }
     }
 
@@ -382,7 +406,6 @@ export function evaluateCode(
       }
     }
 
-    // Syntax is 100% valid at this point!
     // 5. Multi-Strategy Structure & Pattern Validation
     const cleanPattern = unescapeRegexPattern(validationRegex);
     const normalizedCode = normalizeStringLiterals(trimmed);
@@ -391,15 +414,15 @@ export function evaluateCode(
 
     let passes = false;
 
-    // Strategy A: Direct Regex Match with unescaped pattern
+    // Strategy A: Direct Regex Match with unescaped pattern (dotAll 'is' flag)
     try {
-      const directReg = new RegExp(cleanPattern, 'i');
+      const directReg = new RegExp(cleanPattern, 'is');
       if (directReg.test(trimmed) || directReg.test(normalizedCode)) {
         passes = true;
       }
     } catch (_e) {}
 
-    // Strategy B: Relaxed Regex with String Wildcarding
+    // Strategy B: Relaxed Regex with String Wildcarding (dotAll 'is' flag)
     if (!passes) {
       try {
         const relaxedReg = relaxValidationRegex(validationRegex);
@@ -440,6 +463,15 @@ export function evaluateCode(
         isCorrect: true,
         syntaxValid: true,
         errorMsg: ''
+      };
+    }
+
+    // If structure didn't pass, and there was an AST syntax error, return that error
+    if (astSyntaxError) {
+      return {
+        isCorrect: false,
+        syntaxValid: false,
+        errorMsg: astSyntaxError
       };
     }
 
